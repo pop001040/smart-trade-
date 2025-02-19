@@ -1,18 +1,15 @@
-
 import { StockTicker } from "@/components/StockTicker";
 import { Markets } from "@/components/Markets";
 import { StockChart } from "@/components/StockChart";
 import { NewsSection } from "@/components/NewsSection";
 import { TopStocks } from "@/components/TopStocks";
-
 const Index = () => {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-primary via-primary/95 to-primary/90">
-      <header className="w-full py-6 px-4 text-center border-b border-accent/20">
-        <h1 className="text-4xl font-bold text-white mb-2 animate-fadeIn">
-          <span className="text-accent">خبير التداول</span> الذكي
+  return <div className="min-h-screen bg-gradient-to-br from-primary via-primary/95 to-primary/90 rounded">
+      <header className="w-full py-6 px-4 text-center border-b border-accent/20 bg-lime-600 hover:bg-lime-500 rounded-sm">
+        <h1 className="font-bold mb-2 animate-fadeIn text-5xl text-amber-400">
+          <span className="text-gray-50">خبير التداول الذكي </span> الذكي
         </h1>
-        <p className="text-gray-400 max-w-2xl mx-auto">
+        <p className="max-w-2xl mx-auto text-blue-600">
           منصة التداول الأولى للأسواق العالمية والعربية
         </p>
       </header>
@@ -38,8 +35,6 @@ const Index = () => {
           </div>
         </div>
       </main>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
