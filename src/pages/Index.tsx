@@ -5,6 +5,7 @@ import { StockChart } from "@/components/StockChart";
 import { NewsSection } from "@/components/NewsSection";
 import { TopStocks } from "@/components/TopStocks";
 import { ChatBot } from "@/components/ChatBot";
+import { GlobalMarkets } from "@/components/GlobalMarkets";
 
 const Index = () => {
   return <div className="min-h-screen bg-gradient-to-br from-primary via-primary/95 to-primary/90 rounded">
@@ -29,6 +30,10 @@ const Index = () => {
             
             <section className="mb-8">
               <StockChart />
+            </section>
+
+            <section className="mb-8">
+              <GlobalMarkets />
             </section>
           </div>
           
