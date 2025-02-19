@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -6,7 +5,6 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { Button } from '@/components/ui/button';
 import { TrendingUp, TrendingDown, Search, Bell, ArrowUpDown } from 'lucide-react';
 
-// قاعدة بيانات الشركات (150 شركة لكل سوق)
 const generateCompanies = (count: number, marketPrefix: string) => {
   const sectors = ["التكنولوجيا", "البنوك", "الطاقة", "الصناعة", "الاتصالات", "العقارات", "الرعاية الصحية", "السلع الاستهلاكية"];
   return Array.from({ length: count }, (_, i) => ({
@@ -26,6 +24,12 @@ const generateCompanies = (count: number, marketPrefix: string) => {
     high_price: Math.round(Math.random() * 1200 * 100) / 100,
     low_price: Math.round(Math.random() * 800 * 100) / 100
   }));
+};
+
+const cryptoData = {
+  bitcoin: { name: "Bitcoin", change: "+3.2%" },
+  ethereum: { name: "Ethereum", change: "+2.5%" },
+  binance: { name: "Binance", change: "+1.9%" }
 };
 
 const markets = {
@@ -95,9 +99,11 @@ export const GlobalMarkets = () => {
                 <SelectTrigger className="w-[180px] bg-white/5 border-white/10 text-white">
                   <SelectValue placeholder="اختر السوق" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-slate-900 border-white/10">
                   {Object.entries(markets).map(([key, market]) => (
-                    <SelectItem key={key} value={key}>{market.name}</SelectItem>
+                    <SelectItem key={key} value={key} className="text-white hover:bg-white/10">
+                      {market.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -110,14 +116,20 @@ export const GlobalMarkets = () => {
                 <SelectTrigger className="w-[250px] bg-white/5 border-white/10 text-white">
                   <SelectValue placeholder="اختر الشركة" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-slate-900 border-white/10">
                   {filteredCompanies.map((company) => (
-                    <SelectItem key={company.id} value={company.id.toString()}>
-                      <div className="flex justify-between items-center gap-4">
-                        <span>{company.name}</span>
-                        <span className={company.change >= 0 ? 'text-green-400' : 'text-red-400'}>
-                          ${company.price.toFixed(2)}
-                        </span>
+                    <SelectItem key={company.id} value={company.id.toString()} className="text-white hover:bg-white/10">
+                      <div className="flex justify-between items-center gap-4 w-full">
+                        <div className="flex flex-col">
+                          <span>{company.name}</span>
+                          <span className="text-xs text-gray-400">{company.sector}</span>
+                        </div>
+                        <div className="flex flex-col items-end">
+                          <span>${company.price.toFixed(2)}</span>
+                          <span className={company.change >= 0 ? 'text-green-400 text-xs' : 'text-red-400 text-xs'}>
+                            {company.change > 0 ? '+' : ''}{company.change}%
+                          </span>
+                        </div>
                       </div>
                     </SelectItem>
                   ))}
@@ -142,12 +154,61 @@ export const GlobalMarkets = () => {
             <div>
               <h3 className="text-xl font-bold text-white">{selectedCompany.name}</h3>
               <p className="text-sm text-gray-400">{selectedCompany.symbol}</p>
+              <p className="text-xs text-accent/80">{selectedCompany.sector}</p>
             </div>
             <Button variant="ghost" onClick={() => setSelectedCompany(null)}>×</Button>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* التحليل الفني */}
+              {/* Crypto Market Overview */}
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-white mb-2">العملات المشفرة</h4>
+                  <div className="grid grid-cols-3 gap-2">
+                    {Object.entries(cryptoData).map(([key, data]) => (
+                      <div key={key} className="p-2 bg-white/5 rounded">
+                        <p className="text-sm text-gray-400">{data.name}</p>
+                        <p className="text-green-400">{data.change}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Stock Details */}
+                <div>
+                  <h4 className="text-white mb-2">تفاصيل السهم</h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="p-2 bg-white/5 rounded">
+                      <p className="text-sm text-gray-400">السعر الحالي</p>
+                      <p className="text-white">${selectedCompany.price.toFixed(2)}</p>
+                    </div>
+                    <div className="p-2 bg-white/5 rounded">
+                      <p className="text-sm text-gray-400">التغير</p>
+                      <p className={selectedCompany.change >= 0 ? 'text-green-400' : 'text-red-400'}>
+                        {selectedCompany.change > 0 ? '+' : ''}{selectedCompany.change}%
+                      </p>
+                    </div>
+                    <div className="p-2 bg-white/5 rounded">
+                      <p className="text-sm text-gray-400">أعلى سعر</p>
+                      <p className="text-white">${selectedCompany.high_price.toFixed(2)}</p>
+                    </div>
+                    <div className="p-2 bg-white/5 rounded">
+                      <p className="text-sm text-gray-400">أدنى سعر</p>
+                      <p className="text-white">${selectedCompany.low_price.toFixed(2)}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Trading Volume */}
+                <div>
+                  <h4 className="text-white mb-2">حجم التداول</h4>
+                  <div className="p-2 bg-white/5 rounded">
+                    <p className="text-white">{(selectedCompany.volume / 1000000).toFixed(1)}M</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Technical Analysis */}
               <div className="space-y-4">
                 <div>
                   <h4 className="text-white mb-2">التحليل الفني</h4>
