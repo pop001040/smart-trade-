@@ -1,10 +1,21 @@
 import { useState } from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, TrendingDown, Search, Bell } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { TrendingUp, TrendingDown, Search, Bell, ChevronDown } from 'lucide-react';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+  Area,
+  AreaChart
+} from 'recharts';
 
 const sectors = ["التكنولوجيا", "البنوك", "الطاقة", "الصناعة", "الاتصالات", "العقارات", "الرعاية الصحية", "السلع الاستهلاكية"];
 const forexData = {
@@ -103,26 +114,46 @@ const markets = {
   }
 };
 
-const StockPriceChart = ({
-  data
-}: {
-  data: StockDataPoint[];
-}) => {
-  return <div className="h-[200px] w-full">
+const StockPriceChart = ({ data }: { data: StockDataPoint[] }) => {
+  return (
+    <div className="h-[300px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data}>
+        <AreaChart data={data}>
+          <defs>
+            <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.8}/>
+              <stop offset="95%" stopColor="#4F46E5" stopOpacity={0}/>
+            </linearGradient>
+          </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
-          <XAxis dataKey="date" stroke="#ffffff60" />
-          <YAxis stroke="#ffffff60" />
-          <Tooltip contentStyle={{
-          backgroundColor: '#1f2937',
-          border: '1px solid #4b5563',
-          borderRadius: '8px'
-        }} />
-          <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} dot={false} />
-        </LineChart>
+          <XAxis 
+            dataKey="date" 
+            stroke="#ffffff60"
+            tick={{ fill: '#ffffff80' }}
+          />
+          <YAxis 
+            stroke="#ffffff60"
+            tick={{ fill: '#ffffff80' }}
+          />
+          <Tooltip 
+            contentStyle={{
+              backgroundColor: '#1f2937',
+              border: '1px solid #4b5563',
+              borderRadius: '8px'
+            }}
+          />
+          <Legend />
+          <Area 
+            type="monotone" 
+            dataKey="value" 
+            stroke="#4F46E5" 
+            fill="url(#colorValue)"
+            strokeWidth={2}
+          />
+        </AreaChart>
       </ResponsiveContainer>
-    </div>;
+    </div>
+  );
 };
 
 export const GlobalMarkets = () => {
@@ -138,7 +169,7 @@ export const GlobalMarkets = () => {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="backdrop-blur bg-zinc-950 hover:bg-zinc-800">
+        <Card className="backdrop-blur bg-zinc-950">
           <CardHeader className="flex flex-row items-center justify-between">
             <h3 className="text-lg font-semibold text-white">سوق الفوركس</h3>
           </CardHeader>
@@ -156,14 +187,14 @@ export const GlobalMarkets = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-card/50 backdrop-blur">
-          <CardHeader className="flex flex-row items-center justify-between bg-zinc-950 hover:bg-zinc-800">
+        <Card className="backdrop-blur bg-zinc-950">
+          <CardHeader className="flex flex-row items-center justify-between">
             <h3 className="text-lg font-semibold text-white">التنبيهات</h3>
             <Button variant="outline" size="icon">
               <Bell className="h-4 w-4" />
             </Button>
           </CardHeader>
-          <CardContent className="bg-zinc-950 hover:bg-zinc-800">
+          <CardContent>
             <div className="space-y-2">
               {selectedCompany && (
                 <>
@@ -194,8 +225,8 @@ export const GlobalMarkets = () => {
         </Card>
       </div>
 
-      <Card className="bg-card/50 backdrop-blur">
-        <CardHeader className="bg-zinc-950 hover:bg-zinc-800">
+      <Card className="backdrop-blur bg-zinc-950">
+        <CardHeader>
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex flex-wrap gap-2">
               {Object.entries(markets).map(([key, market]) => (
@@ -222,8 +253,8 @@ export const GlobalMarkets = () => {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="bg-zinc-950 hover:bg-zinc-800">
-          <div className="space-y-6 py-0 rounded-2xl">
+        <CardContent>
+          <div className="space-y-6">
             {selectedCompany && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="col-span-2">
@@ -253,27 +284,48 @@ export const GlobalMarkets = () => {
                 </div>
               </div>
             )}
-            <div className="space-y-2">
-              {filteredCompanies.map((company) => (
-                <div
-                  key={company.id}
-                  className={`p-4 rounded cursor-pointer transition-colors ${
-                    selectedCompany?.id === company.id
-                      ? 'bg-white/20'
-                      : 'bg-white/5 hover:bg-white/10'
-                  }`}
-                  onClick={() => setSelectedCompany(company)}
-                >
+
+            <div className="space-y-4">
+              <Select 
+                value={selectedCompany?.id.toString()} 
+                onValueChange={(value) => {
+                  const company = filteredCompanies.find(c => c.id.toString() === value);
+                  if (company) setSelectedCompany(company);
+                }}
+              >
+                <SelectTrigger className="w-full bg-zinc-800 text-white border-zinc-700">
+                  <SelectValue placeholder="اختر شركة" />
+                </SelectTrigger>
+                <SelectContent className="bg-zinc-800 text-white border-zinc-700">
+                  {filteredCompanies.map((company) => (
+                    <SelectItem 
+                      key={company.id} 
+                      value={company.id.toString()}
+                      className="hover:bg-zinc-700"
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <span>{company.name}</span>
+                        <span className={company.change >= 0 ? 'text-green-400' : 'text-red-400'}>
+                          {company.change >= 0 ? '+' : ''}{company.change}%
+                        </span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {selectedCompany && (
+                <div className="p-4 bg-white/5 rounded">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-medium text-white">{company.symbol}</h4>
-                      <p className="text-sm text-gray-400">{company.name}</p>
+                      <h4 className="font-medium text-white">{selectedCompany.symbol}</h4>
+                      <p className="text-sm text-gray-400">{selectedCompany.name}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-white">${company.price}</p>
-                      <p className={`text-sm ${company.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                        {company.change >= 0 ? '+' : ''}{company.change}%
-                        {company.change >= 0 ? (
+                      <p className="text-white">${selectedCompany.price}</p>
+                      <p className={`text-sm ${selectedCompany.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        {selectedCompany.change >= 0 ? '+' : ''}{selectedCompany.change}%
+                        {selectedCompany.change >= 0 ? (
                           <TrendingUp className="h-4 w-4 inline ml-1" />
                         ) : (
                           <TrendingDown className="h-4 w-4 inline ml-1" />
@@ -282,7 +334,7 @@ export const GlobalMarkets = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </CardContent>
