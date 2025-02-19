@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,9 +9,7 @@ import { TrendingUp, TrendingDown, Search, Bell, ArrowUpDown } from 'lucide-reac
 // قاعدة بيانات الشركات (150 شركة لكل سوق)
 const generateCompanies = (count: number, marketPrefix: string) => {
   const sectors = ["التكنولوجيا", "البنوك", "الطاقة", "الصناعة", "الاتصالات", "العقارات", "الرعاية الصحية", "السلع الاستهلاكية"];
-  return Array.from({
-    length: count
-  }, (_, i) => ({
+  return Array.from({ length: count }, (_, i) => ({
     id: i + 1,
     symbol: `${marketPrefix}${(i + 1).toString().padStart(4, '0')}`,
     name: `شركة ${marketPrefix} ${i + 1}`,
@@ -23,9 +22,12 @@ const generateCompanies = (count: number, marketPrefix: string) => {
     volatility: Math.round(Math.random() * 100) / 100,
     pe_ratio: Math.round(Math.random() * 50 * 100) / 100,
     market_cap: Math.round(Math.random() * 1000000000000),
-    dividend_yield: Math.round(Math.random() * 10 * 100) / 100
+    dividend_yield: Math.round(Math.random() * 10 * 100) / 100,
+    high_price: Math.round(Math.random() * 1200 * 100) / 100,
+    low_price: Math.round(Math.random() * 800 * 100) / 100
   }));
 };
+
 const markets = {
   US: {
     name: "السوق الأمريكي",
@@ -44,6 +46,7 @@ const markets = {
     companies: generateCompanies(150, "GU")
   }
 };
+
 type Company = {
   id: number;
   symbol: string;
@@ -58,20 +61,30 @@ type Company = {
   pe_ratio: number;
   market_cap: number;
   dividend_yield: number;
+  high_price: number;
+  low_price: number;
 };
+
 export const GlobalMarkets = () => {
   const [selectedMarket, setSelectedMarket] = useState('US');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [alertPrice, setAlertPrice] = useState<number | null>(null);
+
   const handleCompanyClick = (company: Company) => {
     setSelectedCompany(company);
   };
+
   const handleSetAlert = (price: number) => {
     setAlertPrice(price);
     // TODO: Implement alert system
   };
-  const filteredCompanies = markets[selectedMarket].companies.filter(company => company.name.toLowerCase().includes(searchQuery.toLowerCase()) || company.symbol.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const filteredCompanies = markets[selectedMarket].companies.filter(company =>
+    company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    company.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return <div className="space-y-6">
       <Card className="backdrop-blur-sm bg-white/10 border border-white/20">
         <CardHeader>
