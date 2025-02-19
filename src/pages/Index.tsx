@@ -1,8 +1,11 @@
+
 import { StockTicker } from "@/components/StockTicker";
 import { Markets } from "@/components/Markets";
 import { StockChart } from "@/components/StockChart";
 import { NewsSection } from "@/components/NewsSection";
 import { TopStocks } from "@/components/TopStocks";
+import { ChatBot } from "@/components/ChatBot";
+
 const Index = () => {
   return <div className="min-h-screen bg-gradient-to-br from-primary via-primary/95 to-primary/90 rounded">
       <header className="w-full py-6 px-4 text-center border-b border-accent/20 bg-lime-600 hover:bg-lime-500 rounded-sm">
@@ -30,6 +33,7 @@ const Index = () => {
           </div>
           
           <div className="space-y-6">
+            <ChatBot />
             <TopStocks />
             <NewsSection />
           </div>
@@ -37,4 +41,5 @@ const Index = () => {
       </main>
     </div>;
 };
+
 export default Index;
