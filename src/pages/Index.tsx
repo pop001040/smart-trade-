@@ -1,6 +1,9 @@
 
 import { StockTicker } from "@/components/StockTicker";
 import { Markets } from "@/components/Markets";
+import { StockChart } from "@/components/StockChart";
+import { NewsSection } from "@/components/NewsSection";
+import { TopStocks } from "@/components/TopStocks";
 
 const Index = () => {
   return (
@@ -17,10 +20,23 @@ const Index = () => {
       <StockTicker />
       
       <main className="container mx-auto px-4 py-8">
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold text-white mb-6 text-right">الأسواق المالية</h2>
-          <Markets />
-        </section>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold text-white mb-6 text-right">الأسواق المالية</h2>
+              <Markets />
+            </section>
+            
+            <section className="mb-8">
+              <StockChart />
+            </section>
+          </div>
+          
+          <div className="space-y-6">
+            <TopStocks />
+            <NewsSection />
+          </div>
+        </div>
       </main>
     </div>
   );
