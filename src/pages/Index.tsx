@@ -1,3 +1,4 @@
+
 import { StockTicker } from "@/components/StockTicker";
 import { Markets } from "@/components/Markets";
 import { StockChart } from "@/components/StockChart";
@@ -5,8 +6,10 @@ import { NewsSection } from "@/components/NewsSection";
 import { TopStocks } from "@/components/TopStocks";
 import { ChatBot } from "@/components/ChatBot";
 import { GlobalMarkets } from "@/components/GlobalMarkets";
+
 const Index = () => {
-  return <div className="min-h-screen bg-gradient-to-br from-primary via-primary/95 to-primary/90 rounded">
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-primary via-primary/95 to-primary/90 rounded">
       <header className="w-full py-6 px-4 text-center border-b border-accent/20 bg-lime-600 hover:bg-lime-500 rounded-sm">
         <h1 className="font-bold mb-2 animate-fadeIn text-5xl text-zinc-50 my-0 mx-0">
           <span className="text-gray-50">خبير التداول</span> الذكي
@@ -27,10 +30,12 @@ const Index = () => {
             </section>
             
             <section className="mb-8">
+              <h2 className="text-2xl font-bold text-white mb-6 text-right">تحليل الأسهم</h2>
               <StockChart />
             </section>
 
             <section className="mb-8">
+              <h2 className="text-2xl font-bold text-white mb-6 text-right">الأسواق العالمية والعربية</h2>
               <GlobalMarkets />
             </section>
           </div>
@@ -42,6 +47,8 @@ const Index = () => {
           </div>
         </div>
       </main>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;

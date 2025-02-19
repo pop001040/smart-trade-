@@ -5,6 +5,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { Button } from '@/components/ui/button';
 import { TrendingUp, TrendingDown, Search, Bell } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
 const sectors = ["التكنولوجيا", "البنوك", "الطاقة", "الصناعة", "الاتصالات", "العقارات", "الرعاية الصحية", "السلع الاستهلاكية"];
 const forexData = {
   eurusd: {
@@ -20,10 +21,12 @@ const forexData = {
     change: "+0.45%"
   }
 };
+
 type StockDataPoint = {
   date: string;
   value: number;
 };
+
 const generateStockData = (days: number): StockDataPoint[] => {
   return Array.from({
     length: days
@@ -32,6 +35,7 @@ const generateStockData = (days: number): StockDataPoint[] => {
     value: Math.random() * 100 + 20
   }));
 };
+
 type Company = {
   id: number;
   symbol: string;
@@ -51,6 +55,7 @@ type Company = {
   market_cap: number;
   dividend_yield: number;
 };
+
 const generateCompanies = (count: number, marketPrefix: string): Company[] => {
   return Array.from({
     length: count
@@ -74,6 +79,7 @@ const generateCompanies = (count: number, marketPrefix: string): Company[] => {
     dividend_yield: Math.round(Math.random() * 10 * 100) / 100
   }));
 };
+
 const markets = {
   egypt: {
     name: "السوق المصري",
@@ -96,6 +102,7 @@ const markets = {
     companies: generateCompanies(150, "QAT")
   }
 };
+
 const StockPriceChart = ({
   data
 }: {
@@ -117,12 +124,19 @@ const StockPriceChart = ({
       </ResponsiveContainer>
     </div>;
 };
+
 export const GlobalMarkets = () => {
   const [selectedMarket, setSelectedMarket] = useState("egypt");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(markets.egypt.companies[0]);
-  const filteredCompanies = markets[selectedMarket as keyof typeof markets].companies.filter(company => company.name.toLowerCase().includes(searchQuery.toLowerCase()) || company.symbol.toLowerCase().includes(searchQuery.toLowerCase()));
-  return <div className="space-y-6">
+
+  const filteredCompanies = markets[selectedMarket as keyof typeof markets].companies.filter(company => 
+    company.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    company.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="backdrop-blur bg-zinc-950 hover:bg-zinc-800">
           <CardHeader className="flex flex-row items-center justify-between">
@@ -130,12 +144,14 @@ export const GlobalMarkets = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {Object.entries(forexData).map(([key, pair]) => <div key={key} className="flex items-center justify-between p-2 bg-white/5 rounded">
+              {Object.entries(forexData).map(([key, pair]) => (
+                <div key={key} className="flex items-center justify-between p-2 bg-white/5 rounded">
                   <span className="text-white">{pair.name}</span>
                   <span className={`${pair.change.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>
                     {pair.change}
                   </span>
-                </div>)}
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
@@ -149,7 +165,8 @@ export const GlobalMarkets = () => {
           </CardHeader>
           <CardContent className="bg-zinc-950 hover:bg-zinc-800">
             <div className="space-y-2">
-              {selectedCompany && <>
+              {selectedCompany && (
+                <>
                   <div className="p-2 bg-white/5 rounded">
                     <p className="text-sm text-gray-400">حجم التداول</p>
                     <p className="text-white">{selectedCompany.volume.toLocaleString()}</p>
@@ -170,7 +187,8 @@ export const GlobalMarkets = () => {
                     <p className="text-sm text-gray-400">مضاعف الربحية</p>
                     <p className="text-white">{selectedCompany.pe_ratio}</p>
                   </div>
-                </>}
+                </>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -180,22 +198,34 @@ export const GlobalMarkets = () => {
         <CardHeader className="bg-zinc-950 hover:bg-zinc-800">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex flex-wrap gap-2">
-              {Object.entries(markets).map(([key, market]) => <Button key={key} variant={selectedMarket === key ? "default" : "outline"} onClick={() => {
-              setSelectedMarket(key);
-              setSelectedCompany(market.companies[0]);
-            }}>
+              {Object.entries(markets).map(([key, market]) => (
+                <Button
+                  key={key}
+                  variant={selectedMarket === key ? "default" : "outline"}
+                  onClick={() => {
+                    setSelectedMarket(key);
+                    setSelectedCompany(market.companies[0]);
+                  }}
+                >
                   {market.name}
-                </Button>)}
+                </Button>
+              ))}
             </div>
             <div className="flex-1 relative">
               <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
-              <Input className="pl-8" placeholder="ابحث عن شركة..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+              <Input
+                className="pl-8"
+                placeholder="ابحث عن شركة..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
           </div>
         </CardHeader>
         <CardContent className="bg-zinc-950 hover:bg-zinc-800">
           <div className="space-y-6 py-0 rounded-2xl">
-            {selectedCompany && <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {selectedCompany && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="col-span-2">
                   <StockPriceChart data={selectedCompany.stockData} />
                 </div>
@@ -221,9 +251,19 @@ export const GlobalMarkets = () => {
                     <p className="text-white">{selectedCompany.dividend_yield}%</p>
                   </div>
                 </div>
-              </div>}
+              </div>
+            )}
             <div className="space-y-2">
-              {filteredCompanies.map(company => <div key={company.id} className={`p-4 rounded cursor-pointer transition-colors ${selectedCompany?.id === company.id ? 'bg-white/20' : 'bg-white/5 hover:bg-white/10'}`} onClick={() => setSelectedCompany(company)}>
+              {filteredCompanies.map((company) => (
+                <div
+                  key={company.id}
+                  className={`p-4 rounded cursor-pointer transition-colors ${
+                    selectedCompany?.id === company.id
+                      ? 'bg-white/20'
+                      : 'bg-white/5 hover:bg-white/10'
+                  }`}
+                  onClick={() => setSelectedCompany(company)}
+                >
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="font-medium text-white">{company.symbol}</h4>
@@ -233,14 +273,20 @@ export const GlobalMarkets = () => {
                       <p className="text-white">${company.price}</p>
                       <p className={`text-sm ${company.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                         {company.change >= 0 ? '+' : ''}{company.change}%
-                        {company.change >= 0 ? <TrendingUp className="h-4 w-4 inline ml-1" /> : <TrendingDown className="h-4 w-4 inline ml-1" />}
+                        {company.change >= 0 ? (
+                          <TrendingUp className="h-4 w-4 inline ml-1" />
+                        ) : (
+                          <TrendingDown className="h-4 w-4 inline ml-1" />
+                        )}
                       </p>
                     </div>
                   </div>
-                </div>)}
+                </div>
+              ))}
             </div>
           </div>
         </CardContent>
       </Card>
-    </div>;
+    </div>
+  );
 };
