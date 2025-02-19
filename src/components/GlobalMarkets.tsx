@@ -3,10 +3,46 @@ import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, TrendingDown, Search, Bell, ArrowUpDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, Search, Bell } from 'lucide-react';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts';
 
-const generateCompanies = (count: number, marketPrefix: string) => {
-  const sectors = ["التكنولوجيا", "البنوك", "الطاقة", "الصناعة", "الاتصالات", "العقارات", "الرعاية الصحية", "السلع الاستهلاكية"];
+const sectors = ["التكنولوجيا", "البنوك", "الطاقة", "الصناعة", "الاتصالات", "العقارات", "الرعاية الصحية", "السلع الاستهلاكية"];
+
+type StockDataPoint = {
+  date: string;
+  value: number;
+};
+
+const generateStockData = (days: number): StockDataPoint[] => {
+  return Array.from({ length: days }, (_, i) => ({
+    date: `2024/${Math.floor(i / 30) + 1}/${(i % 30) + 1}`,
+    value: Math.random() * 100 + 20
+  }));
+};
+
+type Company = {
+  id: number;
+  symbol: string;
+  name: string;
+  sector: string;
+  price: number;
+  change: number;
+  volume: number;
+  stockData: StockDataPoint[];
+  current_price: number;
+  lowest_price: number;
+  highest_price: number;
+};
+
+const generateCompanies = (count: number, marketPrefix: string): Company[] => {
   return Array.from({ length: count }, (_, i) => ({
     id: i + 1,
     symbol: `${marketPrefix}${(i + 1).toString().padStart(4, '0')}`,
@@ -15,21 +51,11 @@ const generateCompanies = (count: number, marketPrefix: string) => {
     price: Math.round(Math.random() * 1000 * 100) / 100,
     change: Math.round((Math.random() * 10 - 5) * 100) / 100,
     volume: Math.round(Math.random() * 1000000),
-    rsi: Math.round(Math.random() * 100),
-    macd: Math.round(Math.random() * 100 - 50) / 10,
-    volatility: Math.round(Math.random() * 100) / 100,
-    pe_ratio: Math.round(Math.random() * 50 * 100) / 100,
-    market_cap: Math.round(Math.random() * 1000000000000),
-    dividend_yield: Math.round(Math.random() * 10 * 100) / 100,
-    high_price: Math.round(Math.random() * 1200 * 100) / 100,
-    low_price: Math.round(Math.random() * 800 * 100) / 100
+    stockData: generateStockData(30),
+    current_price: Math.round(Math.random() * 100),
+    lowest_price: Math.round(Math.random() * 50),
+    highest_price: Math.round(Math.random() * 150)
   }));
-};
-
-const cryptoData = {
-  bitcoin: { name: "Bitcoin", change: "+3.2%" },
-  ethereum: { name: "Ethereum", change: "+2.5%" },
-  binance: { name: "Binance", change: "+1.9%" }
 };
 
 const markets = {
@@ -51,22 +77,32 @@ const markets = {
   }
 };
 
-type Company = {
-  id: number;
-  symbol: string;
-  name: string;
-  sector: string;
-  price: number;
-  change: number;
-  volume: number;
-  rsi: number;
-  macd: number;
-  volatility: number;
-  pe_ratio: number;
-  market_cap: number;
-  dividend_yield: number;
-  high_price: number;
-  low_price: number;
+const StockPriceChart = ({ data }: { data: StockDataPoint[] }) => {
+  return (
+    <div className="h-[200px] w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
+          <XAxis dataKey="date" stroke="#ffffff60" />
+          <YAxis stroke="#ffffff60" />
+          <Tooltip 
+            contentStyle={{ 
+              backgroundColor: '#1f2937', 
+              border: '1px solid #4b5563',
+              borderRadius: '8px'
+            }}
+          />
+          <Line 
+            type="monotone" 
+            dataKey="value" 
+            stroke="#8884d8" 
+            strokeWidth={2}
+            dot={false}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
 };
 
 export const GlobalMarkets = () => {
@@ -190,11 +226,11 @@ export const GlobalMarkets = () => {
                     </div>
                     <div className="p-2 bg-white/5 rounded">
                       <p className="text-sm text-gray-400">أعلى سعر</p>
-                      <p className="text-white">${selectedCompany.high_price.toFixed(2)}</p>
+                      <p className="text-white">${selectedCompany.highest_price.toFixed(2)}</p>
                     </div>
                     <div className="p-2 bg-white/5 rounded">
                       <p className="text-sm text-gray-400">أدنى سعر</p>
-                      <p className="text-white">${selectedCompany.low_price.toFixed(2)}</p>
+                      <p className="text-white">${selectedCompany.lowest_price.toFixed(2)}</p>
                     </div>
                   </div>
                 </div>
