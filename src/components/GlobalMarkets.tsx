@@ -17,10 +17,10 @@ import {
 
 const sectors = ["التكنولوجيا", "البنوك", "الطاقة", "الصناعة", "الاتصالات", "العقارات", "الرعاية الصحية", "السلع الاستهلاكية"];
 
-const cryptoData = {
-  bitcoin: { name: "Bitcoin", change: "+3.2%" },
-  ethereum: { name: "Ethereum", change: "+2.5%" },
-  binance: { name: "Binance", change: "+1.9%" }
+const forexData = {
+  eurusd: { name: "EUR/USD", change: "+0.32%" },
+  gbpusd: { name: "GBP/USD", change: "-0.15%" },
+  usdjpy: { name: "USD/JPY", change: "+0.45%" }
 };
 
 type StockDataPoint = {
@@ -139,17 +139,17 @@ export const GlobalMarkets = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="bg-card/50 backdrop-blur">
           <CardHeader className="flex flex-row items-center justify-between">
-            <h3 className="text-lg font-semibold text-white">أسواق العملات المشفرة</h3>
+            <h3 className="text-lg font-semibold text-white">سوق الفوركس</h3>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {Object.entries(cryptoData).map(([key, crypto]) => (
+              {Object.entries(forexData).map(([key, pair]) => (
                 <div key={key} className="flex items-center justify-between p-2 bg-white/5 rounded">
-                  <span className="text-white">{crypto.name}</span>
+                  <span className="text-white">{pair.name}</span>
                   <span className={`${
-                    crypto.change.startsWith('+') ? 'text-green-400' : 'text-red-400'
+                    pair.change.startsWith('+') ? 'text-green-400' : 'text-red-400'
                   }`}>
-                    {crypto.change}
+                    {pair.change}
                   </span>
                 </div>
               ))}
@@ -200,7 +200,10 @@ export const GlobalMarkets = () => {
           <div className="flex flex-col md:flex-row gap-4">
             <Select 
               defaultValue={selectedMarket}
-              onValueChange={setSelectedMarket}
+              onValueChange={(value) => {
+                setSelectedMarket(value);
+                setSelectedCompany(markets[value as keyof typeof markets].companies[0]);
+              }}
             >
               <SelectTrigger className="w-full md:w-[200px]">
                 <SelectValue placeholder="اختر السوق" />
@@ -255,7 +258,7 @@ export const GlobalMarkets = () => {
                 </div>
               </div>
             )}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="space-y-2">
               {filteredCompanies.map((company) => (
                 <div
                   key={company.id}
