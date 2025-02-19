@@ -21,7 +21,7 @@ const Index = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <section className="mb-8 py-0 my-0 mx-0 px-[6px] rounded bg-zinc-950 hover:bg-zinc-800">
+            <section className="mb-8 py-0 mx-0 rounded bg-zinc-950 hover:bg-zinc-800 px-0 my-[29px]">
               <h2 className="text-2xl font-bold text-white mb-6 text-right">الأسواق المالية</h2>
               <Markets />
             </section>
@@ -37,7 +37,7 @@ const Index = () => {
             </section>
           </div>
           
-          <div className="space-y-6">
+          <div className="space-y-6 mx-0">
             <ChatBot />
             <TopStocks />
             <NewsSection />
