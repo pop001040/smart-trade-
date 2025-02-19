@@ -96,36 +96,45 @@ export const GlobalMarkets = () => {
                   <SelectValue placeholder="اختر السوق" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.entries(markets).map(([key, market]) => <SelectItem key={key} value={key}>{market.name}</SelectItem>)}
+                  {Object.entries(markets).map(([key, market]) => (
+                    <SelectItem key={key} value={key}>{market.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select 
+                onValueChange={(value) => {
+                  const company = filteredCompanies.find(c => c.id.toString() === value);
+                  if (company) handleCompanyClick(company);
+                }}
+              >
+                <SelectTrigger className="w-[250px] bg-white/5 border-white/10 text-white">
+                  <SelectValue placeholder="اختر الشركة" />
+                </SelectTrigger>
+                <SelectContent>
+                  {filteredCompanies.map((company) => (
+                    <SelectItem key={company.id} value={company.id.toString()}>
+                      <div className="flex justify-between items-center gap-4">
+                        <span>{company.name}</span>
+                        <span className={company.change >= 0 ? 'text-green-400' : 'text-red-400'}>
+                          ${company.price.toFixed(2)}
+                        </span>
+                      </div>
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <div className="relative flex-1 md:w-64">
-                <Input placeholder="ابحث عن شركة..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="bg-white/5 border-white/10 text-white pl-10" />
+                <Input 
+                  placeholder="ابحث عن شركة..." 
+                  value={searchQuery} 
+                  onChange={e => setSearchQuery(e.target.value)} 
+                  className="bg-white/5 border-white/10 text-white pl-10" 
+                />
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
               </div>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="bg-slate-950 hover:bg-slate-800">
-          <div className="grid gap-4">
-            {filteredCompanies.map(company => <div key={company.id} onClick={() => handleCompanyClick(company)} className="p-4 rounded-lg hover:bg-white/5 transition-colors border border-white/10 cursor-pointer">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="text-white font-medium">{company.symbol}</h4>
-                    <p className="text-sm text-gray-400">{company.name}</p>
-                    <span className="text-xs text-accent/80">{company.sector}</span>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-white font-medium">${company.price.toFixed(2)}</p>
-                    <span className={`flex items-center ${company.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      {company.change >= 0 ? <TrendingUp className="w-4 h-4 ml-1" /> : <TrendingDown className="w-4 h-4 ml-1" />}
-                      {company.change > 0 ? '+' : ''}{company.change}%
-                    </span>
-                  </div>
-                </div>
-              </div>)}
-          </div>
-        </CardContent>
       </Card>
 
       {selectedCompany && <Card className="backdrop-blur-sm bg-white/10 border border-white/20">
