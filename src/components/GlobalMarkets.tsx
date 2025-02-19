@@ -16,6 +16,12 @@ import {
 
 const sectors = ["التكنولوجيا", "البنوك", "الطاقة", "الصناعة", "الاتصالات", "العقارات", "الرعاية الصحية", "السلع الاستهلاكية"];
 
+const cryptoData = {
+  bitcoin: { name: "Bitcoin", change: "+3.2%" },
+  ethereum: { name: "Ethereum", change: "+2.5%" },
+  binance: { name: "Binance", change: "+1.9%" }
+};
+
 type StockDataPoint = {
   date: string;
   value: number;
@@ -40,6 +46,12 @@ type Company = {
   current_price: number;
   lowest_price: number;
   highest_price: number;
+  rsi: number;
+  macd: number;
+  volatility: number;
+  pe_ratio: number;
+  market_cap: number;
+  dividend_yield: number;
 };
 
 const generateCompanies = (count: number, marketPrefix: string): Company[] => {
@@ -54,7 +66,13 @@ const generateCompanies = (count: number, marketPrefix: string): Company[] => {
     stockData: generateStockData(30),
     current_price: Math.round(Math.random() * 100),
     lowest_price: Math.round(Math.random() * 50),
-    highest_price: Math.round(Math.random() * 150)
+    highest_price: Math.round(Math.random() * 150),
+    rsi: Math.round(Math.random() * 100),
+    macd: Math.round(Math.random() * 100 - 50) / 10,
+    volatility: Math.round(Math.random() * 100) / 100,
+    pe_ratio: Math.round(Math.random() * 50 * 100) / 100,
+    market_cap: Math.round(Math.random() * 1000000000000),
+    dividend_yield: Math.round(Math.random() * 10 * 100) / 100
   }));
 };
 
@@ -304,7 +322,7 @@ export const GlobalMarkets = () => {
                   <div className="space-y-2">
                     <div className="p-2 bg-white/5 rounded">
                       <p className="text-sm text-gray-400">القيمة السوقية</p>
-                      <p className="text-white">${(selectedCompany.market_cap / 1000000000).toFixed(2)}B</p>
+                      <p className="text-white">${(selectedCompany.market_cap / 1000000000000).toFixed(2)}B</p>
                     </div>
                     <div className="p-2 bg-white/5 rounded">
                       <p className="text-sm text-gray-400">عائد التوزيعات</p>
