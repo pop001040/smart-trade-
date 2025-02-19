@@ -1,33 +1,40 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-interface Stock {
-  symbol: string;
-  price: number;
-  change: number;
-}
+const stockNews = [
+  "البورصة المصرية تغلق على ارتفاع بنسبة 1.2% في جلسة اليوم",
+  "البنك المركزي المصري يبقي على أسعار الفائدة دون تغيير",
+  "شركات التكنولوجيا تقود مكاسب السوق السعودي",
+  "بورصة قطر تسجل أعلى مستوى في 6 أشهر",
+  "أسواق الخليج تتحرك بشكل إيجابي مع ارتفاع أسعار النفط"
+];
 
 export const StockTicker = () => {
-  const [stocks, setStocks] = useState<Stock[]>([
-    { symbol: "AAPL", price: 173.50, change: 2.5 },
-    { symbol: "MSFT", price: 384.20, change: -1.2 },
-    { symbol: "GOOGL", price: 142.65, change: 1.8 },
-    { symbol: "AMZN", price: 156.80, change: 3.2 },
-    { symbol: "TSLA", price: 238.45, change: -2.1 },
-  ]);
+  const [position, setPosition] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPosition((prev) => (prev - 1) % (window.innerWidth * 2));
+    }, 30);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="w-full overflow-hidden bg-primary py-2 border-b border-accent/20">
-      <div className="animate-ticker whitespace-nowrap inline-block">
-        {stocks.map((stock, index) => (
+    <div className="bg-black/50 py-2 overflow-hidden relative">
+      <div
+        className="whitespace-nowrap absolute"
+        style={{
+          transform: `translateX(${position}px)`,
+          direction: "ltr"
+        }}
+      >
+        {stockNews.map((news, index) => (
           <span
             key={index}
-            className="inline-block px-4 text-sm font-medium"
+            className="mx-8 text-white inline-block"
           >
-            <span className="text-white">{stock.symbol}</span>
-            <span className={`ml-2 ${stock.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-              ${stock.price.toFixed(2)} ({stock.change > 0 ? '+' : ''}{stock.change}%)
-            </span>
+            {news}
           </span>
         ))}
       </div>
