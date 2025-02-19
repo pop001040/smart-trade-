@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -77,21 +78,21 @@ const generateCompanies = (count: number, marketPrefix: string): Company[] => {
 };
 
 const markets = {
-  US: {
-    name: "السوق الأمريكي",
-    companies: generateCompanies(150, "US")
+  saudi: {
+    name: "السوق السعودي",
+    companies: generateCompanies(10, "SAU")
   },
-  EU: {
-    name: "السوق الأوروبي",
-    companies: generateCompanies(150, "EU")
+  uae: {
+    name: "سوق الإمارات",
+    companies: generateCompanies(10, "UAE")
   },
-  ASIA: {
-    name: "الأسواق الآسيوية",
-    companies: generateCompanies(150, "AS")
+  qatar: {
+    name: "سوق قطر",
+    companies: generateCompanies(10, "QAT")
   },
-  GULF: {
-    name: "أسواق الخليج",
-    companies: generateCompanies(150, "GU")
+  kuwait: {
+    name: "سوق الكويت",
+    companies: generateCompanies(10, "KWT")
   }
 };
 
@@ -124,219 +125,174 @@ const StockPriceChart = ({ data }: { data: StockDataPoint[] }) => {
 };
 
 export const GlobalMarkets = () => {
-  const [selectedMarket, setSelectedMarket] = useState('US');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-  const [alertPrice, setAlertPrice] = useState<number | null>(null);
+  const [selectedMarket, setSelectedMarket] = useState("saudi");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(markets.saudi.companies[0]);
 
-  const handleCompanyClick = (company: Company) => {
-    setSelectedCompany(company);
-  };
-
-  const handleSetAlert = (price: number) => {
-    setAlertPrice(price);
-    // TODO: Implement alert system
-  };
-
-  const filteredCompanies = markets[selectedMarket].companies.filter(company =>
-    company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    company.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCompanies = markets[selectedMarket as keyof typeof markets].companies.filter(
+    company => company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              company.symbol.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  return <div className="space-y-6">
-      <Card className="backdrop-blur-sm bg-white/10 border border-white/20">
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card className="bg-card/50 backdrop-blur">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <h3 className="text-lg font-semibold text-white">أسواق العملات المشفرة</h3>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {Object.entries(cryptoData).map(([key, crypto]) => (
+                <div key={key} className="flex items-center justify-between p-2 bg-white/5 rounded">
+                  <span className="text-white">{crypto.name}</span>
+                  <span className={`${
+                    crypto.change.startsWith('+') ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    {crypto.change}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-card/50 backdrop-blur">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <h3 className="text-lg font-semibold text-white">التنبيهات</h3>
+            <Button variant="outline" size="icon">
+              <Bell className="h-4 w-4" />
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {selectedCompany && (
+                <>
+                  <div className="p-2 bg-white/5 rounded">
+                    <p className="text-sm text-gray-400">حجم التداول</p>
+                    <p className="text-white">{selectedCompany.volume.toLocaleString()}</p>
+                  </div>
+                  <div className="p-2 bg-white/5 rounded">
+                    <p className="text-sm text-gray-400">RSI</p>
+                    <p className="text-white">{selectedCompany.rsi}</p>
+                  </div>
+                  <div className="p-2 bg-white/5 rounded">
+                    <p className="text-sm text-gray-400">MACD</p>
+                    <p className="text-white">{selectedCompany.macd}</p>
+                  </div>
+                  <div className="p-2 bg-white/5 rounded">
+                    <p className="text-sm text-gray-400">التقلب</p>
+                    <p className="text-white">{selectedCompany.volatility}%</p>
+                  </div>
+                  <div className="p-2 bg-white/5 rounded">
+                    <p className="text-sm text-gray-400">مضاعف الربحية</p>
+                    <p className="text-white">{selectedCompany.pe_ratio}</p>
+                  </div>
+                </>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="bg-card/50 backdrop-blur">
         <CardHeader>
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <h3 className="text-xl font-bold text-white">الأسواق العالمية</h3>
-            <div className="flex gap-4 w-full md:w-auto">
-              <Select value={selectedMarket} onValueChange={setSelectedMarket}>
-                <SelectTrigger className="w-[180px] bg-white/5 border-white/10 text-white">
-                  <SelectValue placeholder="اختر السوق" />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-900 border-white/10">
-                  {Object.entries(markets).map(([key, market]) => (
-                    <SelectItem key={key} value={key} className="text-white hover:bg-white/10">
-                      {market.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select 
-                onValueChange={(value) => {
-                  const company = filteredCompanies.find(c => c.id.toString() === value);
-                  if (company) handleCompanyClick(company);
-                }}
-              >
-                <SelectTrigger className="w-[250px] bg-white/5 border-white/10 text-white">
-                  <SelectValue placeholder="اختر الشركة" />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-900 border-white/10">
-                  {filteredCompanies.map((company) => (
-                    <SelectItem key={company.id} value={company.id.toString()} className="text-white hover:bg-white/10">
-                      <div className="flex justify-between items-center gap-4 w-full">
-                        <div className="flex flex-col">
-                          <span>{company.name}</span>
-                          <span className="text-xs text-gray-400">{company.sector}</span>
-                        </div>
-                        <div className="flex flex-col items-end">
-                          <span>${company.price.toFixed(2)}</span>
-                          <span className={company.change >= 0 ? 'text-green-400 text-xs' : 'text-red-400 text-xs'}>
-                            {company.change > 0 ? '+' : ''}{company.change}%
-                          </span>
-                        </div>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <div className="relative flex-1 md:w-64">
-                <Input 
-                  placeholder="ابحث عن شركة..." 
-                  value={searchQuery} 
-                  onChange={e => setSearchQuery(e.target.value)} 
-                  className="bg-white/5 border-white/10 text-white pl-10" 
-                />
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-              </div>
+          <div className="flex flex-col md:flex-row gap-4">
+            <Select 
+              defaultValue={selectedMarket}
+              onValueChange={setSelectedMarket}
+            >
+              <SelectTrigger className="w-full md:w-[200px]">
+                <SelectValue placeholder="اختر السوق" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(markets).map(([key, market]) => (
+                  <SelectItem key={key} value={key}>
+                    {market.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="flex-1 relative">
+              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+              <Input
+                className="pl-8"
+                placeholder="ابحث عن شركة..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
           </div>
         </CardHeader>
-      </Card>
-
-      {selectedCompany && <Card className="backdrop-blur-sm bg-white/10 border border-white/20">
-          <CardHeader className="flex flex-row justify-between items-center">
-            <div>
-              <h3 className="text-xl font-bold text-white">{selectedCompany.name}</h3>
-              <p className="text-sm text-gray-400">{selectedCompany.symbol}</p>
-              <p className="text-xs text-accent/80">{selectedCompany.sector}</p>
-            </div>
-            <Button variant="ghost" onClick={() => setSelectedCompany(null)}>×</Button>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Crypto Market Overview */}
-              <div className="space-y-4">
-                <div>
-                  <h4 className="text-white mb-2">العملات المشفرة</h4>
-                  <div className="grid grid-cols-3 gap-2">
-                    {Object.entries(cryptoData).map(([key, data]) => (
-                      <div key={key} className="p-2 bg-white/5 rounded">
-                        <p className="text-sm text-gray-400">{data.name}</p>
-                        <p className="text-green-400">{data.change}</p>
-                      </div>
-                    ))}
+        <CardContent>
+          <div className="space-y-6">
+            {selectedCompany && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="col-span-2">
+                  <StockPriceChart data={selectedCompany.stockData} />
+                </div>
+                <div className="space-y-2">
+                  <div className="p-2 bg-white/5 rounded">
+                    <p className="text-sm text-gray-400">السعر الحالي</p>
+                    <p className="text-white">${selectedCompany.current_price}</p>
+                  </div>
+                  <div className="p-2 bg-white/5 rounded">
+                    <p className="text-sm text-gray-400">أدنى سعر</p>
+                    <p className="text-white">${selectedCompany.lowest_price}</p>
+                  </div>
+                  <div className="p-2 bg-white/5 rounded">
+                    <p className="text-sm text-gray-400">أعلى سعر</p>
+                    <p className="text-white">${selectedCompany.highest_price}</p>
+                  </div>
+                  <div className="p-2 bg-white/5 rounded">
+                    <p className="text-sm text-gray-400">القيمة السوقية</p>
+                    <p className="text-white">${(selectedCompany.market_cap / 1000000000000).toFixed(2)}T</p>
+                  </div>
+                  <div className="p-2 bg-white/5 rounded">
+                    <p className="text-sm text-gray-400">عائد التوزيعات</p>
+                    <p className="text-white">{selectedCompany.dividend_yield}%</p>
                   </div>
                 </div>
-
-                {/* Stock Details */}
-                <div>
-                  <h4 className="text-white mb-2">تفاصيل السهم</h4>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="p-2 bg-white/5 rounded">
-                      <p className="text-sm text-gray-400">السعر الحالي</p>
-                      <p className="text-white">${selectedCompany.price.toFixed(2)}</p>
+              </div>
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredCompanies.map((company) => (
+                <div
+                  key={company.id}
+                  className={`p-4 rounded cursor-pointer transition-colors ${
+                    selectedCompany?.id === company.id
+                      ? 'bg-white/20'
+                      : 'bg-white/5 hover:bg-white/10'
+                  }`}
+                  onClick={() => setSelectedCompany(company)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-white">{company.symbol}</h4>
+                      <p className="text-sm text-gray-400">{company.name}</p>
                     </div>
-                    <div className="p-2 bg-white/5 rounded">
-                      <p className="text-sm text-gray-400">التغير</p>
-                      <p className={selectedCompany.change >= 0 ? 'text-green-400' : 'text-red-400'}>
-                        {selectedCompany.change > 0 ? '+' : ''}{selectedCompany.change}%
+                    <div className="text-right">
+                      <p className="text-white">${company.price}</p>
+                      <p
+                        className={`text-sm ${
+                          company.change >= 0 ? 'text-green-400' : 'text-red-400'
+                        }`}
+                      >
+                        {company.change >= 0 ? '+' : ''}{company.change}%
+                        {company.change >= 0 ? (
+                          <TrendingUp className="h-4 w-4 inline ml-1" />
+                        ) : (
+                          <TrendingDown className="h-4 w-4 inline ml-1" />
+                        )}
                       </p>
                     </div>
-                    <div className="p-2 bg-white/5 rounded">
-                      <p className="text-sm text-gray-400">أعلى سعر</p>
-                      <p className="text-white">${selectedCompany.highest_price.toFixed(2)}</p>
-                    </div>
-                    <div className="p-2 bg-white/5 rounded">
-                      <p className="text-sm text-gray-400">أدنى سعر</p>
-                      <p className="text-white">${selectedCompany.lowest_price.toFixed(2)}</p>
-                    </div>
                   </div>
                 </div>
-
-                {/* Trading Volume */}
-                <div>
-                  <h4 className="text-white mb-2">حجم التداول</h4>
-                  <div className="p-2 bg-white/5 rounded">
-                    <p className="text-white">{(selectedCompany.volume / 1000000).toFixed(1)}M</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Technical Analysis */}
-              <div className="space-y-4">
-                <div>
-                  <h4 className="text-white mb-2">التحليل الفني</h4>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="p-2 bg-white/5 rounded">
-                      <p className="text-sm text-gray-400">RSI</p>
-                      <p className="text-white">{selectedCompany.rsi}</p>
-                    </div>
-                    <div className="p-2 bg-white/5 rounded">
-                      <p className="text-sm text-gray-400">MACD</p>
-                      <p className="text-white">{selectedCompany.macd}</p>
-                    </div>
-                    <div className="p-2 bg-white/5 rounded">
-                      <p className="text-sm text-gray-400">التقلب</p>
-                      <p className="text-white">{selectedCompany.volatility}</p>
-                    </div>
-                    <div className="p-2 bg-white/5 rounded">
-                      <p className="text-sm text-gray-400">مضاعف الربحية</p>
-                      <p className="text-white">{selectedCompany.pe_ratio}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* محاكي التداول */}
-                <div>
-                  <h4 className="text-white mb-2">محاكي التداول</h4>
-                  <div className="p-3 bg-white/5 rounded space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-400">السعر الحالي</span>
-                      <span className="text-white">${selectedCompany.price}</span>
-                    </div>
-                    <Input type="number" placeholder="عدد الأسهم" className="bg-white/5 border-white/10 text-white" />
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-400">القيمة الإجمالية</span>
-                      <span className="text-white">${(selectedCompany.price * 100).toFixed(2)}</span>
-                    </div>
-                    <Button className="w-full bg-accent hover:bg-accent/80">محاكاة التداول</Button>
-                  </div>
-                </div>
-              </div>
-
-              {/* تنبيهات الأسعار والمؤشرات */}
-              <div className="space-y-4">
-                <div>
-                  <h4 className="text-white mb-2">تنبيهات الأسعار</h4>
-                  <div className="p-3 bg-white/5 rounded space-y-2">
-                    <Input type="number" placeholder="سعر التنبيه" className="bg-white/5 border-white/10 text-white" onChange={e => setAlertPrice(Number(e.target.value))} />
-                    <Button className="w-full flex items-center justify-center gap-2" onClick={() => handleSetAlert(Number(alertPrice))}>
-                      <Bell className="w-4 h-4" />
-                      تعيين تنبيه
-                    </Button>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="text-white mb-2">معلومات إضافية</h4>
-                  <div className="space-y-2">
-                    <div className="p-2 bg-white/5 rounded">
-                      <p className="text-sm text-gray-400">القيمة السوقية</p>
-                      <p className="text-white">${(selectedCompany.market_cap / 1000000000000).toFixed(2)}B</p>
-                    </div>
-                    <div className="p-2 bg-white/5 rounded">
-                      <p className="text-sm text-gray-400">عائد التوزيعات</p>
-                      <p className="text-white">{selectedCompany.dividend_yield}%</p>
-                    </div>
-                    <div className="p-2 bg-white/5 rounded">
-                      <p className="text-sm text-gray-400">حجم التداول</p>
-                      <p className="text-white">{selectedCompany.volume.toLocaleString()}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
-          </CardContent>
-        </Card>}
-    </div>;
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
 };
