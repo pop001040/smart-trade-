@@ -78,21 +78,25 @@ const generateCompanies = (count: number, marketPrefix: string): Company[] => {
 };
 
 const markets = {
+  egypt: {
+    name: "السوق المصري",
+    companies: generateCompanies(150, "EGY")
+  },
   saudi: {
     name: "السوق السعودي",
-    companies: generateCompanies(10, "SAU")
-  },
-  uae: {
-    name: "سوق الإمارات",
-    companies: generateCompanies(10, "UAE")
-  },
-  qatar: {
-    name: "سوق قطر",
-    companies: generateCompanies(10, "QAT")
+    companies: generateCompanies(150, "SAU")
   },
   kuwait: {
-    name: "سوق الكويت",
-    companies: generateCompanies(10, "KWT")
+    name: "السوق الكويتي",
+    companies: generateCompanies(150, "KWT")
+  },
+  oman: {
+    name: "بورصة عمان",
+    companies: generateCompanies(150, "OMN")
+  },
+  qatar: {
+    name: "السوق القطري",
+    companies: generateCompanies(150, "QAT")
   }
 };
 
@@ -125,9 +129,9 @@ const StockPriceChart = ({ data }: { data: StockDataPoint[] }) => {
 };
 
 export const GlobalMarkets = () => {
-  const [selectedMarket, setSelectedMarket] = useState("saudi");
+  const [selectedMarket, setSelectedMarket] = useState("egypt");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCompany, setSelectedCompany] = useState<Company | null>(markets.saudi.companies[0]);
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(markets.egypt.companies[0]);
 
   const filteredCompanies = markets[selectedMarket as keyof typeof markets].companies.filter(
     company => company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -198,24 +202,20 @@ export const GlobalMarkets = () => {
       <Card className="bg-card/50 backdrop-blur">
         <CardHeader>
           <div className="flex flex-col md:flex-row gap-4">
-            <Select 
-              defaultValue={selectedMarket}
-              onValueChange={(value) => {
-                setSelectedMarket(value);
-                setSelectedCompany(markets[value as keyof typeof markets].companies[0]);
-              }}
-            >
-              <SelectTrigger className="w-full md:w-[200px]">
-                <SelectValue placeholder="اختر السوق" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(markets).map(([key, market]) => (
-                  <SelectItem key={key} value={key}>
-                    {market.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(markets).map(([key, market]) => (
+                <Button
+                  key={key}
+                  variant={selectedMarket === key ? "default" : "outline"}
+                  onClick={() => {
+                    setSelectedMarket(key);
+                    setSelectedCompany(market.companies[0]);
+                  }}
+                >
+                  {market.name}
+                </Button>
+              ))}
+            </div>
             <div className="flex-1 relative">
               <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
               <Input
