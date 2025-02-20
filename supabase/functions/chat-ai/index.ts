@@ -8,7 +8,6 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -18,7 +17,7 @@ serve(async (req) => {
     const openAIKey = Deno.env.get('OPENAI_API_KEY')
 
     if (!openAIKey) {
-      throw new Error('OPENAI_API_KEY is not configured')
+      throw new Error('مفتاح OpenAI غير مكوّن')
     }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -28,24 +27,34 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4',
         messages: [
           {
             role: 'system',
-            content: 'أنت مساعد مالي خبير متخصص في الأسواق المالية العربية والعالمية. قدم نصائح وتحليلات دقيقة واجب على الأسئلة المتعلقة بالأسهم والأسواق المالية. استخدم اللغة العربية في إجاباتك.'
+            content: `
+              أنت مساعد مالي خبير متخصص في الأسواق المالية العربية والعالمية.
+              أجب دائماً باللغة العربية.
+              قدم تحليلات مالية دقيقة وشاملة.
+              عندما تتحدث عن الأسهم، قدم مؤشرات فنية ونصائح استثمارية.
+              استخدم مصطلحات مالية عربية.
+              كن دقيقاً في تقديم الأرقام والإحصائيات.
+            `
           },
           ...messages
         ],
+        temperature: 0.7,
+        max_tokens: 800
       }),
     })
 
     const data = await response.json()
-
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ 
+      error: 'عذراً، حدث خطأ في معالجة طلبك. يرجى المحاولة مرة أخرى.'
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })

@@ -9,12 +9,12 @@ interface Stock {
 }
 
 const arabicStocks = [
-  { symbol: "ARAMCO", name: "أرامكو السعودية", price: 32.15, change: 1.8 },
-  { symbol: "SABIC", name: "سابك", price: 95.20, change: -1.2 },
-  { symbol: "QNB", name: "بنك قطر الوطني", price: 185.60, change: 1.5 },
-  { symbol: "FAB", name: "بنك أبوظبي الأول", price: 75.30, change: 2.1 },
-  { symbol: "EMAAR", name: "إعمار العقارية", price: 45.80, change: -0.8 },
-  { symbol: "STC", name: "الاتصالات السعودية", price: 98.40, change: 0.9 }
+  { symbol: "2222.SR", name: "أرامكو السعودية", price: 32.15, change: 1.8 },
+  { symbol: "1120.SR", name: "الراجحي المالية", price: 95.20, change: -1.2 },
+  { symbol: "COMI.CA", name: "البنك التجاري الدولي", price: 185.60, change: 1.5 },
+  { symbol: "NBK.KW", name: "بنك الكويت الوطني", price: 75.30, change: 2.1 },
+  { symbol: "FAB.AD", name: "بنك أبوظبي الأول", price: 45.80, change: -0.8 },
+  { symbol: "QNB.QA", name: "بنك قطر الوطني", price: 98.40, change: 0.9 }
 ];
 
 export const StockTicker = () => {
@@ -22,13 +22,12 @@ export const StockTicker = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // Update stock prices randomly for simulation
       setStocks(prevStocks => prevStocks.map(stock => ({
         ...stock,
         price: stock.price * (1 + (Math.random() - 0.5) * 0.02),
         change: stock.change + (Math.random() - 0.5)
       })));
-    }, 5000); // Update every 5 seconds
+    }, 3000);
 
     return () => clearInterval(interval);
   }, []);
@@ -46,7 +45,7 @@ export const StockTicker = () => {
           <span key={index} className="inline-block px-4 text-sm font-medium">
             <span className="text-white">{stock.name}</span>
             <span className={`mr-2 ${stock.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-              ${stock.price.toFixed(2)} ({stock.change > 0 ? '+' : ''}{stock.change.toFixed(2)}%)
+              {stock.price.toFixed(2)} ريال ({stock.change > 0 ? '+' : ''}{stock.change.toFixed(2)}%)
             </span>
           </span>
         ))}

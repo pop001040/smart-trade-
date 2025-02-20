@@ -17,46 +17,46 @@ const markets = {
   egypt: {
     name: "السوق المصري",
     symbols: [
-      { symbol: "HRHO.CA", name: "EFG Hermes" },
-      { symbol: "CICH.CA", name: "CI Capital" },
-      { symbol: "BTFH.CA", name: "Beltone Financial" },
-      { symbol: "PHDC.CA", name: "Pharos Holding" },
-      { symbol: "HELI.CA", name: "HC Securities & Investment" },
-      { symbol: "PIOH.CA", name: "Pioneers Holding" },
-      { symbol: "AAIB.CA", name: "Arab African International Bank" },
-      { symbol: "BMII.CA", name: "Banque Misr Investment" },
-      { symbol: "NBKE.CA", name: "National Bank of Egypt Investment" },
-      { symbol: "CCAP.CA", name: "Cairo Capital Securities" }
+      { symbol: "COMI.CA", name: "البنك التجاري الدولي" },
+      { symbol: "EAST.CA", name: "الشرقية للدخان" },
+      { symbol: "FWRY.CA", name: "فوري" },
+      { symbol: "TMGH.CA", name: "طلعت مصطفى" },
+      { symbol: "HRHO.CA", name: "هيرميس" },
+      { symbol: "SWDY.CA", name: "السويدي إليكتريك" },
+      { symbol: "EFIH.CA", name: "إي فاينانس" },
+      { symbol: "ABUK.CA", name: "أبو قير للأسمدة" },
+      { symbol: "ETEL.CA", name: "المصرية للاتصالات" },
+      { symbol: "AMOC.CA", name: "أموك" }
     ]
   },
   saudi: {
     name: "السوق السعودي",
     symbols: [
-      { symbol: "1120.SR", name: "Al Rajhi Capital" },
-      { symbol: "1180.SR", name: "NCB Capital (SNB Capital)" },
-      { symbol: "DERAYAH.SR", name: "Derayah Financial" },
-      { symbol: "ALJAZIRA.SR", name: "Aljazira Capital" },
-      { symbol: "ICAP.SR", name: "Alistithmar Capital" },
-      { symbol: "SAMBA.SR", name: "Samba Capital" },
-      { symbol: "MULKIA.SR", name: "Mulkia Investment" },
-      { symbol: "ANB.SR", name: "ANB Invest" },
-      { symbol: "RIYADCAP.SR", name: "Riyad Capital" },
-      { symbol: "FRANSI.SR", name: "Saudi Fransi Capital" }
+      { symbol: "2222.SR", name: "أرامكو السعودية" },
+      { symbol: "1120.SR", name: "الراجحي" },
+      { symbol: "2350.SR", name: "كيان السعودية" },
+      { symbol: "2310.SR", name: "سبكيم العالمية" },
+      { symbol: "1211.SR", name: "معادن" },
+      { symbol: "2001.SR", name: "كيمانول" },
+      { symbol: "2290.SR", name: "ينساب" },
+      { symbol: "4231.SR", name: "الزامل للصناعة" },
+      { symbol: "2330.SR", name: "المتقدمة" },
+      { symbol: "2380.SR", name: "بتروكيم" }
     ]
   },
   kuwait: {
     name: "السوق الكويتي",
     symbols: [
-      { symbol: "XTB.KW", name: "XTB Kuwait" },
-      { symbol: "MARKAZ.KW", name: "Kuwait Financial Centre" },
-      { symbol: "KAMCO.KW", name: "KAMCO Invest" },
-      { symbol: "NBK.KW", name: "NBK Capital" },
-      { symbol: "GIC.KW", name: "Gulf Investment Corporation" },
-      { symbol: "BOURSA.KW", name: "Boursa Kuwait Securities Company" },
-      { symbol: "BAYAN.KW", name: "Bayan Investment Company" },
-      { symbol: "OSOUL.KW", name: "Osoul Investment Company" },
-      { symbol: "NIC.KW", name: "National Investments Company" },
-      { symbol: "ALMASAR.KW", name: "Al Masar Investment" }
+      { symbol: "NBK.KW", name: "بنك الكويت الوطني" },
+      { symbol: "KFH.KW", name: "بيت التمويل الكويتي" },
+      { symbol: "ZAIN.KW", name: "زين" },
+      { symbol: "BOUBYAN.KW", name: "بنك بوبيان" },
+      { symbol: "AGILITY.KW", name: "أجيليتي" },
+      { symbol: "KPROJ.KW", name: "مشاريع الكويت" },
+      { symbol: "MEZZAN.KW", name: "ميزان" },
+      { symbol: "NIND.KW", name: "الصناعات الوطنية" },
+      { symbol: "AGLTY.KW", name: "أجيليتي للمخازن" },
+      { symbol: "BURG.KW", name: "برقان" }
     ]
   },
   oman: {
