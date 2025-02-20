@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { TrendingUp, TrendingDown, Search, Bell, ChevronDown } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart } from 'recharts';
-
 const sectors = ["التكنولوجيا", "البنوك", "الطاقة", "الصناعة", "الاتصالات", "العقارات", "الرعاية الصحية", "السلع الاستهلاكية"];
 const forexData = {
   eurusd: {
@@ -21,12 +20,10 @@ const forexData = {
     change: "+0.45%"
   }
 };
-
 type StockDataPoint = {
   date: string;
   value: number;
 };
-
 const generateStockData = (days: number): StockDataPoint[] => {
   return Array.from({
     length: days
@@ -35,7 +32,6 @@ const generateStockData = (days: number): StockDataPoint[] => {
     value: Math.random() * 100 + 20
   }));
 };
-
 type Company = {
   id: number;
   symbol: string;
@@ -55,7 +51,6 @@ type Company = {
   market_cap: number;
   dividend_yield: number;
 };
-
 const generateCompanies = (count: number, marketPrefix: string): Company[] => {
   return Array.from({
     length: count
@@ -79,7 +74,6 @@ const generateCompanies = (count: number, marketPrefix: string): Company[] => {
     dividend_yield: Math.round(Math.random() * 10 * 100) / 100
   }));
 };
-
 const markets = {
   global: {
     name: "السوق العالمي",
@@ -106,59 +100,50 @@ const markets = {
     companies: generateCompanies(150, "QAT")
   }
 };
-
-const StockPriceChart = ({ data }: { data: StockDataPoint[] }) => {
-  return (
-    <div className="h-[200px] w-full">
+const StockPriceChart = ({
+  data
+}: {
+  data: StockDataPoint[];
+}) => {
+  return <div className="h-[200px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data}>
           <defs>
             <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.8}/>
-              <stop offset="95%" stopColor="#4F46E5" stopOpacity={0}/>
+              <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#4F46E5" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
-          <XAxis dataKey="date" stroke="#ffffff60" tick={{ fill: '#ffffff80' }} />
-          <YAxis stroke="#ffffff60" tick={{ fill: '#ffffff80' }} />
+          <XAxis dataKey="date" stroke="#ffffff60" tick={{
+          fill: '#ffffff80'
+        }} />
+          <YAxis stroke="#ffffff60" tick={{
+          fill: '#ffffff80'
+        }} />
           <Tooltip contentStyle={{
-            backgroundColor: '#1f2937',
-            border: '1px solid #4b5563',
-            borderRadius: '8px'
-          }} />
+          backgroundColor: '#1f2937',
+          border: '1px solid #4b5563',
+          borderRadius: '8px'
+        }} />
           <Area type="monotone" dataKey="value" stroke="#4F46E5" fill="url(#colorValue)" strokeWidth={2} />
         </AreaChart>
       </ResponsiveContainer>
-    </div>
-  );
+    </div>;
 };
-
 export const GlobalMarkets = () => {
   const [selectedMarket, setSelectedMarket] = useState("global");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [showDetails, setShowDetails] = useState(false);
-
-  const filteredCompanies = markets[selectedMarket as keyof typeof markets].companies.filter(company => 
-    company.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    company.symbol.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
+  const filteredCompanies = markets[selectedMarket as keyof typeof markets].companies.filter(company => company.name.toLowerCase().includes(searchQuery.toLowerCase()) || company.symbol.toLowerCase().includes(searchQuery.toLowerCase()));
   const handleCompanyClick = (company: Company) => {
     setSelectedCompany(company);
     setShowDetails(true);
   };
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       <div className="relative aspect-video w-full bg-zinc-900 rounded-lg">
-        <video 
-          className="w-full h-full object-cover rounded-lg"
-          controls
-          autoPlay
-          muted
-          loop
-        >
+        <video className="w-full h-full object-cover rounded-lg" controls autoPlay muted loop>
           <source src="/path-to-your-video.mp4" type="video/mp4" />
           يرجى تحديث متصفحك لدعم تشغيل الفيديو
         </video>
@@ -167,77 +152,53 @@ export const GlobalMarkets = () => {
       <Card className="backdrop-blur bg-zinc-950">
         <CardHeader>
           <div className="flex flex-col md:flex-row gap-4">
-            <Select 
-              value={selectedMarket}
-              onValueChange={(value) => {
-                setSelectedMarket(value);
-                setSelectedCompany(null);
-                setShowDetails(false);
-              }}
-            >
+            <Select value={selectedMarket} onValueChange={value => {
+            setSelectedMarket(value);
+            setSelectedCompany(null);
+            setShowDetails(false);
+          }}>
               <SelectTrigger className="w-[200px] bg-zinc-800 text-white border-zinc-700">
                 <SelectValue placeholder="اختر السوق" />
               </SelectTrigger>
               <SelectContent className="bg-zinc-800 text-white border-zinc-700">
-                {Object.entries(markets).map(([key, market]) => (
-                  <SelectItem 
-                    key={key} 
-                    value={key}
-                    className="hover:bg-zinc-700"
-                  >
+                {Object.entries(markets).map(([key, market]) => <SelectItem key={key} value={key} className="hover:bg-zinc-700">
                     {market.name}
-                  </SelectItem>
-                ))}
+                  </SelectItem>)}
               </SelectContent>
             </Select>
             
             <div className="flex-1 relative">
               <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
-              <Input
-                className="pl-8"
-                placeholder="ابحث عن شركة..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+              <Input className="pl-8" placeholder="ابحث عن شركة..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          <Select 
-            value={selectedCompany?.id.toString() || ''} 
-            onValueChange={(value) => {
-              const company = filteredCompanies.find(c => c.id.toString() === value);
-              if (company) {
-                setSelectedCompany(company);
-                setShowDetails(true);
-              }
-            }}
-          >
+          <Select value={selectedCompany?.id.toString() || ''} onValueChange={value => {
+          const company = filteredCompanies.find(c => c.id.toString() === value);
+          if (company) {
+            setSelectedCompany(company);
+            setShowDetails(true);
+          }
+        }}>
             <SelectTrigger className="w-full bg-zinc-800 text-white border-zinc-700">
               <SelectValue placeholder="اختر شركة" />
             </SelectTrigger>
             <SelectContent className="bg-zinc-800 text-white border-zinc-700 max-h-[300px]">
-              {filteredCompanies.map((company) => (
-                <SelectItem 
-                  key={company.id} 
-                  value={company.id.toString()}
-                  className="hover:bg-zinc-700"
-                >
+              {filteredCompanies.map(company => <SelectItem key={company.id} value={company.id.toString()} className="hover:bg-zinc-700">
                   <div className="flex items-center justify-between w-full">
                     <span>{company.name}</span>
                     <span className={company.change >= 0 ? 'text-green-400' : 'text-red-400'}>
                       ${company.price} ({company.change >= 0 ? '+' : ''}{company.change}%)
                     </span>
                   </div>
-                </SelectItem>
-              ))}
+                </SelectItem>)}
             </SelectContent>
           </Select>
         </CardContent>
       </Card>
 
-      {showDetails && selectedCompany && (
-        <Card className="backdrop-blur bg-[#2D3047] text-white">
+      {showDetails && selectedCompany && <Card className="backdrop-blur bg-[#2D3047] text-white">
           <CardHeader className="border-b border-gray-700">
             <div className="flex justify-between items-center">
               <div>
@@ -245,13 +206,13 @@ export const GlobalMarkets = () => {
                 <p className="text-sm text-gray-400">{selectedCompany.symbol}</p>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="icon" onClick={() => setShowDetails(false)}>
-                  <span className="text-lg">×</span>
+                <Button variant="outline" size="icon" onClick={() => setShowDetails(false)} className="font-medium bg-gray-950 hover:bg-gray-800 text-stone-50">
+                  <span className="text-lg text-zinc-950">×</span>
                 </Button>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="pt-4">
+          <CardContent className="pt-4 bg-slate-950 hover:bg-slate-800">
             <div className="grid grid-cols-1 gap-6">
               <StockPriceChart data={selectedCompany.stockData} />
               
@@ -346,8 +307,7 @@ export const GlobalMarkets = () => {
               </div>
             </div>
           </CardContent>
-        </Card>
-      )}
+        </Card>}
 
       <Card className="backdrop-blur bg-zinc-900">
         <CardHeader>
@@ -355,17 +315,14 @@ export const GlobalMarkets = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-3 gap-4">
-            {Object.entries(forexData).map(([key, data]) => (
-              <div key={key} className="bg-zinc-800 p-4 rounded-lg">
+            {Object.entries(forexData).map(([key, data]) => <div key={key} className="bg-zinc-800 p-4 rounded-lg">
                 <h4 className="text-white font-medium">{data.name}</h4>
                 <p className={data.change.startsWith('+') ? 'text-green-400' : 'text-red-400'}>
                   {data.change}
                 </p>
-              </div>
-            ))}
+              </div>)}
           </div>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 };
