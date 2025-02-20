@@ -88,7 +88,7 @@
   @apply bg-clip-text text-transparent bg-gradient-to-r from-accent to-secondary;
 }
 
-@keyframes ticker {
+@keyframes ticker-rtl {
   0% {
     transform: translateX(-100%);
   }
@@ -98,5 +98,5 @@
 }
 
 .animate-ticker-rtl {
-  animation: ticker 30s linear infinite;
+  animation: ticker-rtl 30s linear infinite;
 }
