@@ -1,50 +1,48 @@
+
 import { useState } from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { MessageSquare, Send, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { supabase } from "@/integrations/supabase/client";
+
 interface Message {
   role: 'user' | 'assistant';
   content: string;
 }
+
 export const ChatBot = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
+
     const userMessage = {
       role: 'user' as const,
       content: input
     };
+
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
+
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [{
-            role: 'system',
-            content: 'أنت مساعد مالي خبير متخصص في الأسواق المالية العربية والعالمية. قدم نصائح وتحليلات دقيقة واجب على الأسئلة المتعلقة بالأسهم والأسواق المالية. استخدم اللغة العربية في إجاباتك.'
-          }, ...messages, userMessage]
-        })
+      const { data, error } = await supabase.functions.invoke('chat-ai', {
+        body: { messages: [...messages, userMessage] }
       });
-      const data = await response.json();
+
+      if (error) throw error;
+
       const assistantMessage = {
         role: 'assistant' as const,
         content: data.choices[0].message.content
       };
+
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       toast({
@@ -56,6 +54,7 @@ export const ChatBot = () => {
       setIsLoading(false);
     }
   };
+
   return <Card className="backdrop-blur-sm bg-white/10 border border-white/20">
       <CardHeader className="flex flex-row items-center gap-2 bg-gray-950 hover:bg-gray-800">
         <MessageSquare className="w-5 h-5 text-accent" />
