@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 
 interface Stock {
@@ -65,17 +64,50 @@ export const StockTicker = () => {
     { symbol: "POUL", price: 2.95, change: -0.2 },
     { symbol: "SCTS", price: 8.45, change: 0.5 },
     
-    // شركات عالمية
-    { symbol: "AAPL", price: 173.50, change: 2.5 },
-    { symbol: "MSFT", price: 384.20, change: -1.2 },
-    { symbol: "GOOGL", price: 142.65, change: 1.8 },
-    { symbol: "AMZN", price: 156.80, change: 3.2 },
-    { symbol: "TSLA", price: 238.45, change: -2.1 },
-    { symbol: "META", price: 326.85, change: 1.7 },
-    { symbol: "NVDA", price: 445.20, change: 2.8 },
-    { symbol: "ARAMCO", price: 32.15, change: -0.8 },
-    { symbol: "QNB", price: 18.45, change: 1.2 },
-    { symbol: "FAB", price: 15.30, change: -0.5 }
+    // شركات سعودية
+    { symbol: "2222", price: 32.15, change: -0.8 }, // أرامكو السعودية
+    { symbol: "1180", price: 42.30, change: 1.2 }, // البنك الأهلي السعودي
+    { symbol: "1120", price: 89.90, change: 2.1 }, // مصرف الراجحي
+    { symbol: "7010", price: 98.50, change: -0.3 }, // شركة الاتصالات السعودية
+    { symbol: "2010", price: 86.20, change: 1.5 }, // سابك
+    { symbol: "1050", price: 38.45, change: -1.2 }, // البنك السعودي الفرنسي
+    { symbol: "1090", price: 41.75, change: 0.8 }, // مجموعة سامبا المالية
+    { symbol: "1080", price: 22.35, change: -0.5 }, // البنك العربي الوطني
+    { symbol: "1060", price: 35.60, change: 1.3 }, // البنك السعودي البريطاني
+    { symbol: "1010", price: 27.90, change: 0.4 }, // بنك الرياض
+    { symbol: "2280", price: 55.50, change: 1.7 }, // شركة المراعي
+    { symbol: "2290", price: 53.40, change: -0.9 }, // ينساب
+    { symbol: "2380", price: 18.65, change: 0.6 }, // بترو رابغ
+    { symbol: "1211", price: 45.80, change: -1.1 }, // معادن
+    { symbol: "2020", price: 115.20, change: 2.3 }, // سابك للمغذيات الزراعية
+    { symbol: "7030", price: 12.85, change: -0.4 }, // زين السعودية
+    { symbol: "7020", price: 28.95, change: 0.7 }, // موبايلي
+    { symbol: "4300", price: 9.65, change: -0.2 }, // دار الأركان
+    { symbol: "4250", price: 25.30, change: 1.4 }, // جبل عمر
+    { symbol: "4220", price: 11.75, change: -0.6 }, // إعمار المدينة الاقتصادية
+
+    // شركات كويتية
+    { symbol: "605", price: 601.00, change: 1.5 }, // زين
+    { symbol: "603", price: 755.00, change: -0.8 }, // أجيليتي
+    { symbol: "413", price: 720.00, change: 2.1 }, // المباني
+    { symbol: "623", price: 3290.00, change: 0.9 }, // هيومن سوفت
+    { symbol: "827", price: 1520.00, change: -0.5 }, // بورصة الكويت
+    { symbol: "826", price: 880.00, change: 1.2 }, // شمال الزور
+    { symbol: "823", price: 218.00, change: -0.3 }, // ميزان القابضة
+    { symbol: "654", price: 880.00, change: 0.7 }, // طيران الجزيرة
+    { symbol: "403", price: 142.00, change: -0.4 }, // الوطنية العقارية
+    { symbol: "501", price: 220.00, change: 1.1 }, // الصناعات الوطنية
+    { symbol: "505", price: 885.00, change: -0.6 }, // الخليج للكابلات
+    { symbol: "503", price: 480.00, change: 0.8 }, // أسمنت الكويت
+    { symbol: "514", price: 890.00, change: -0.2 }, // بوبيان للبتروكيماويات
+    { symbol: "406", price: 355.00, change: 1.3 }, // التمدين العقارية
+    { symbol: "402", price: 245.00, change: -0.5 }, // العقارات المتحدة
+    { symbol: "202", price: 230.00, change: 0.9 }, // التسهيلات التجارية
+    { symbol: "204", price: 132.00, change: -0.7 }, // الاستثمارات الوطنية
+    { symbol: "207", price: 89.00, change: 1.2 }, // الساحل للتنمية
+    { symbol: "219", price: 65.00, change: -0.4 }, // الأولى للاستثمار
+    { symbol: "205", price: 95.00, change: 0.6 } // بيت الأوراق المالية
+
   ]);
 
   return (
