@@ -17,10 +17,10 @@ const Index = () => {
 
       {/* Title Section */}
       <div className="bg-gradient-to-r from-primary to-primary/90 py-12 text-center">
-        <h1 className="text-6xl font-bold mb-4 text-amber-500">
+        <h1 className="mb-4 text-amber-500 font-bold text-7xl">
           <span className="text-amber-500">خبير التداول</span> الذكي
         </h1>
-        <p className="text-2xl max-w-3xl mx-auto text-stone-50">
+        <p className="max-w-3xl mx-auto text-stone-50 text-2xl font-bold">
           منصة التداول الأولى للأسواق العالمية والعربية
         </p>
       </div>
