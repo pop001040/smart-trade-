@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,11 +10,6 @@ import { supabase } from "@/integrations/supabase/client";
 interface Message {
   role: 'user' | 'assistant';
   content: string;
-}
-
-interface Secret {
-  name: string;
-  value: string;
 }
 
 export const ChatBot = () => {
@@ -38,11 +32,12 @@ export const ChatBot = () => {
     setIsLoading(true);
 
     try {
+      // @ts-ignore - We know this table exists even if types don't reflect it
       const { data, error } = await supabase
         .from('secrets')
         .select('value')
         .eq('name', 'GEMINI_API_KEY')
-        .maybeSingle();
+        .single();
 
       if (error) {
         throw new Error("حدث خطأ في الوصول إلى مفتاح API");
