@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { TrendingUp, TrendingDown, Search, Bell, ChevronDown } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart } from 'recharts';
-
 const sectors = ["التكنولوجيا", "البنوك", "الطاقة", "الصناعة", "الاتصالات", "العقارات", "الرعاية الصحية", "السلع الاستهلاكية"];
 const forexData = {
   eurusd: {
@@ -49,12 +48,10 @@ const forexData = {
     price: "161.75"
   }
 };
-
 type StockDataPoint = {
   date: string;
   value: number;
 };
-
 const generateStockData = (days: number): StockDataPoint[] => {
   return Array.from({
     length: days
@@ -63,7 +60,6 @@ const generateStockData = (days: number): StockDataPoint[] => {
     value: Math.random() * 100 + 20
   }));
 };
-
 type Company = {
   id: number;
   symbol: string;
@@ -83,7 +79,6 @@ type Company = {
   market_cap: number;
   dividend_yield: number;
 };
-
 const generateCompanies = (count: number, marketPrefix: string): Company[] => {
   return Array.from({
     length: count
@@ -107,7 +102,6 @@ const generateCompanies = (count: number, marketPrefix: string): Company[] => {
     dividend_yield: Math.round(Math.random() * 10 * 100) / 100
   }));
 };
-
 const markets = {
   global: {
     name: "السوق العالمي",
@@ -134,7 +128,6 @@ const markets = {
     companies: generateCompanies(150, "QAT")
   }
 };
-
 const StockPriceChart = ({
   data
 }: {
@@ -166,7 +159,6 @@ const StockPriceChart = ({
       </ResponsiveContainer>
     </div>;
 };
-
 const TechnicalGauge = ({
   value,
   type
@@ -201,7 +193,6 @@ const TechnicalGauge = ({
       </div>
     </div>;
 };
-
 const CurrencyMatrix = () => {
   const currencies = ['EUR', 'USD', 'JPY', 'GBP', 'CHF', 'AUD', 'CAD', 'NZD'];
   const rates = {
@@ -231,20 +222,16 @@ const CurrencyMatrix = () => {
       </table>
     </div>;
 };
-
 export const GlobalMarkets = () => {
   const [selectedMarket, setSelectedMarket] = useState("global");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [showDetails, setShowDetails] = useState(false);
-
   const filteredCompanies = markets[selectedMarket as keyof typeof markets].companies.filter(company => company.name.toLowerCase().includes(searchQuery.toLowerCase()) || company.symbol.toLowerCase().includes(searchQuery.toLowerCase()));
-
   const handleCompanyClick = (company: Company) => {
     setSelectedCompany(company);
     setShowDetails(true);
   };
-
   const marketMovementData = [{
     sector: "التكنولوجيا",
     performance: 2.5,
@@ -278,41 +265,17 @@ export const GlobalMarkets = () => {
     performance: -1.8,
     volume: 1400000
   }];
-
-  return (
-    <div className="space-y-6">
-      <div className="relative w-full bg-black text-center py-12 px-4 rounded-lg overflow-hidden">
-        <h1 className="text-5xl font-bold mb-4">
-          <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-transparent bg-clip-text">اخـتر</span>{" "}
-          <span className="bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text">افضل</span>
-        </h1>
-        <h2 className="text-4xl font-bold text-white mb-4">الأدوات لنفسك</h2>
-        <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-          اصنع طريقك إلى تجربة مستخدم مالية مذهلة باستخدام أدواتنا المجانية.
-        </p>
-        <div className="relative w-full max-w-4xl mx-auto">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 to-purple-600/20 rounded-lg"></div>
-          <video 
-            className="w-full aspect-[21/9] object-cover rounded-lg"
-            controls
-            autoPlay
-            muted
-            loop
-          >
-            <source src="/widgets-main-video.a3d7152108cd9db92d6c.webm" type="video/webm" />
-            يرجى تحديث متصفحك لدعم تشغيل الفيديو
-          </video>
-        </div>
-      </div>
+  return <div className="space-y-6">
+      
 
       <Card className="backdrop-blur bg-zinc-950">
         <CardHeader>
           <div className="flex flex-col md:flex-row gap-4">
             <Select value={selectedMarket} onValueChange={value => {
-              setSelectedMarket(value);
-              setSelectedCompany(null);
-              setShowDetails(false);
-            }}>
+            setSelectedMarket(value);
+            setSelectedCompany(null);
+            setShowDetails(false);
+          }}>
               <SelectTrigger className="w-[200px] bg-zinc-800 text-white border-zinc-700">
                 <SelectValue placeholder="اختر السوق" />
               </SelectTrigger>
@@ -331,12 +294,12 @@ export const GlobalMarkets = () => {
         </CardHeader>
         <CardContent>
           <Select value={selectedCompany?.id.toString() || ''} onValueChange={value => {
-            const company = filteredCompanies.find(c => c.id.toString() === value);
-            if (company) {
-              setSelectedCompany(company);
-              setShowDetails(true);
-            }
-          }}>
+          const company = filteredCompanies.find(c => c.id.toString() === value);
+          if (company) {
+            setSelectedCompany(company);
+            setShowDetails(true);
+          }
+        }}>
             <SelectTrigger className="w-full bg-zinc-800 text-white border-zinc-700">
               <SelectValue placeholder="اختر شركة" />
             </SelectTrigger>
@@ -520,6 +483,5 @@ export const GlobalMarkets = () => {
           </div>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 };
