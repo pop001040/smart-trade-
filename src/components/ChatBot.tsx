@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { MessageSquare, Send, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-import { supabase } from "@/integrations/supabase/client";
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -31,15 +31,24 @@ export const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('chat-ai', {
-        body: { messages: [...messages, userMessage] }
-      });
+      const genAI = new GoogleGenerativeAI('AIzaSyA6JU8Fmw_S0ozBgLNC7gcZd2Ll0IMIaOA');
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-      if (error) throw error;
+      const prompt = `أنت مساعد مالي خبير متخصص في الأسواق المالية العربية والعالمية.
+        يجب أن تقدم تحليلاً دقيقاً جداً (بنسبة ثقة 90%) للأسهم والتوصيات المالية.
+        الرجاء تقديم:
+        - تحليل فني مفصل
+        - مؤشرات السوق الرئيسية
+        - توصيات محددة مع نسب المخاطرة
+        - نقاط الدخول والخروج المقترحة
 
+        السؤال من المستخدم هو: ${input}`;
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
       const assistantMessage = {
         role: 'assistant' as const,
-        content: data.choices[0].message.content
+        content: response.text()
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -73,7 +82,8 @@ export const ChatBot = () => {
     );
   };
 
-  return <Card className="backdrop-blur-sm bg-white/10 border border-white/20">
+  return (
+    <Card className="backdrop-blur-sm bg-white/10 border border-white/20">
       <CardHeader className="flex flex-row items-center gap-2 bg-gray-950 hover:bg-gray-800">
         <MessageSquare className="w-5 h-5 text-accent" />
         <h3 className="text-xl font-bold text-white">المساعد المالي الذكي</h3>
@@ -88,7 +98,7 @@ export const ChatBot = () => {
                 }`}>
                   {message.content}
                   {message.role === 'assistant' && message.content.includes('تحليل') && (
-                    renderTechnicalIndicator(Math.random() * 100)
+                    renderTechnicalIndicator(90)
                   )}
                 </div>
               </div>
@@ -118,5 +128,6 @@ export const ChatBot = () => {
           </form>
         </div>
       </CardContent>
-    </Card>;
+    </Card>
+  );
 };
