@@ -260,14 +260,34 @@ const TechnicalGauge = ({
 };
 
 const CurrencyMatrix = () => {
-  const currencies = ['EUR', 'USD', 'JPY', 'GBP', 'CHF', 'AUD', 'CAD', 'NZD'];
-  const rates = {
+  const [rates, setRates] = useState({
     'EUR/USD': 1.05171,
-    'EUR/JPY': 157.123,
-    'GBP/USD': 1.2154
-  };
-  return <div className="overflow-x-auto">
-      <table className="w-full text-sm text-left text-gray-300">
+    'EUR/SAR': 3.9425,
+    'USD/SAR': 3.7500,
+    'GBP/USD': 1.2154,
+    'USD/AED': 3.6725,
+    'USD/QAR': 3.6400
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRates(prevRates => {
+        const newRates = { ...prevRates };
+        Object.keys(newRates).forEach(pair => {
+          newRates[pair] = prevRates[pair] * (1 + (Math.random() - 0.5) * 0.001);
+        });
+        return newRates;
+      });
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const currencies = ['EUR', 'USD', 'SAR', 'AED', 'QAR', 'GBP'];
+  
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm text-right text-gray-300">
         <thead className="text-xs uppercase bg-zinc-800/50">
           <tr>
             <th className="p-2"></th>
@@ -275,17 +295,32 @@ const CurrencyMatrix = () => {
           </tr>
         </thead>
         <tbody>
-          {currencies.map((baseCur, i) => <tr key={baseCur} className={i % 2 === 0 ? 'bg-zinc-800/30' : 'bg-zinc-800/10'}>
+          {currencies.map((baseCur, i) => (
+            <tr key={baseCur} className={i % 2 === 0 ? 'bg-zinc-800/30' : 'bg-zinc-800/10'}>
               <td className="p-2 font-medium">{baseCur}</td>
-              {currencies.map(quoteCur => <td key={`${baseCur}/${quoteCur}`} className="p-2">
-                  {baseCur === quoteCur ? <span className="text-gray-500">1.0000</span> : <span className={Math.random() > 0.5 ? 'text-green-400' : 'text-red-400'}>
-                      {(Math.random() * 2 + 0.5).toFixed(4)}
-                    </span>}
-                </td>)}
-            </tr>)}
+              {currencies.map(quoteCur => (
+                <td key={`${baseCur}/${quoteCur}`} className="p-2">
+                  {baseCur === quoteCur ? (
+                    <span className="text-gray-500">1.0000</span>
+                  ) : (
+                    <span 
+                      className={`transition-colors duration-300 ${
+                        Math.random() > 0.5 ? 'text-green-400' : 'text-red-400'
+                      }`}
+                    >
+                      {rates[`${baseCur}/${quoteCur}`]?.toFixed(4) || 
+                        rates[`${quoteCur}/${baseCur}`]?.toFixed(4) || 
+                        (Math.random() * 2 + 0.5).toFixed(4)}
+                    </span>
+                  )}
+                </td>
+              ))}
+            </tr>
+          ))}
         </tbody>
       </table>
-    </div>;
+    </div>
+  );
 };
 
 export const GlobalMarkets = () => {
@@ -315,7 +350,6 @@ export const GlobalMarkets = () => {
               change: parseFloat(data['Global Quote']['09. change'])
             };
           }
-          // إذا لم نتمكن من الحصول على البيانات من API، نقوم بإرجاع بيانات افتراضية
           return {
             symbol: stock.symbol,
             name: stock.name,
