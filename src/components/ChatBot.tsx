@@ -92,16 +92,16 @@ export const ChatBot = () => {
 
   const renderTechnicalIndicator = (value: number) => {
     return (
-      <div className="mt-2 bg-gray-800 rounded-lg p-4">
+      <div className="mt-4 bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg p-4 shadow-lg border border-gray-700">
         <div className="flex justify-between items-center">
-          <span className="text-white">مستوى الثقة في التحليل</span>
-          <span className={`${value >= 90 ? 'text-green-400' : 'text-yellow-400'}`}>
+          <span className="text-white font-semibold text-lg">مستوى الثقة في التحليل</span>
+          <span className={`${value >= 90 ? 'text-green-400' : 'text-yellow-400'} font-bold text-lg`}>
             {value}%
           </span>
         </div>
-        <div className="mt-2 h-2 bg-gray-700 rounded">
+        <div className="mt-3 h-3 bg-gray-700 rounded-full overflow-hidden">
           <div 
-            className={`h-full rounded ${value >= 90 ? 'bg-green-400' : 'bg-yellow-400'}`}
+            className={`h-full rounded-full transition-all duration-500 ${value >= 90 ? 'bg-gradient-to-r from-green-400 to-green-500' : 'bg-gradient-to-r from-yellow-400 to-yellow-500'}`}
             style={{ width: `${value}%` }}
           />
         </div>
@@ -110,20 +110,31 @@ export const ChatBot = () => {
   };
 
   return (
-    <Card className="backdrop-blur-sm bg-white/10 border border-white/20">
-      <CardHeader className="flex flex-row items-center gap-2 bg-gray-950">
-        <MessageSquare className="h-5 w-5 text-accent" />
-        <h3 className="text-xl font-bold text-white">المساعد المالي الذكي</h3>
+    <Card className="backdrop-blur-sm bg-gradient-to-br from-gray-900/90 to-gray-800/90 border border-white/20 shadow-xl">
+      <CardHeader className="flex flex-row items-center gap-3 bg-gradient-to-r from-gray-950 to-gray-900 rounded-t-lg border-b border-white/10">
+        <MessageSquare className="h-6 w-6 text-accent animate-pulse" />
+        <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+          المساعد المالي الذكي
+        </h3>
       </CardHeader>
-      <CardContent className="bg-gray-950">
+      <CardContent className="bg-gradient-to-b from-gray-950 to-gray-900 p-4">
         <div className="h-[400px] flex flex-col">
-          <div className="flex-1 overflow-y-auto space-y-4 mb-4 p-4 bg-stone-950">
+          <div className="flex-1 overflow-y-auto space-y-4 mb-4 p-4 bg-stone-950/80 rounded-lg">
             {messages.map((message, index) => (
-              <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`rounded-lg px-4 py-2 max-w-[80%] ${
-                  message.role === 'user' ? 'bg-accent text-primary ml-auto' : 'bg-white/10 text-white'
-                }`}>
-                  {message.content}
+              <div 
+                key={index} 
+                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}
+              >
+                <div 
+                  className={`rounded-lg px-5 py-3 max-w-[80%] shadow-lg ${
+                    message.role === 'user' 
+                      ? 'bg-gradient-to-r from-accent to-yellow-500 text-primary font-medium ml-auto' 
+                      : 'bg-gradient-to-r from-gray-800 to-gray-700 text-white border border-white/10'
+                  }`}
+                >
+                  <div className="leading-relaxed tracking-wide">
+                    {message.content}
+                  </div>
                   {message.role === 'assistant' && message.content.includes('تحليل') && (
                     renderTechnicalIndicator(95)
                   )}
@@ -132,25 +143,25 @@ export const ChatBot = () => {
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="rounded-lg px-4 py-2 bg-white/10 text-white">
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                <div className="rounded-lg px-4 py-2 bg-gradient-to-r from-gray-800 to-gray-700 text-white">
+                  <Loader2 className="h-5 w-5 animate-spin" />
                 </div>
               </div>
             )}
           </div>
-          <form onSubmit={handleSendMessage} className="flex gap-2">
+          <form onSubmit={handleSendMessage} className="flex gap-3">
             <Input
               value={input}
               onChange={e => setInput(e.target.value)}
               placeholder="اكتب سؤالك عن السهم هنا..."
-              className="bg-white/5 border-white/10 text-white placeholder:text-gray-400"
+              className="bg-white/5 border-white/10 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-accent/50 transition-all"
             />
             <Button
               type="submit"
               disabled={isLoading}
-              className="bg-accent hover:bg-accent/80 text-primary"
+              className="bg-gradient-to-r from-accent to-yellow-500 hover:from-accent/90 hover:to-yellow-500/90 text-primary font-medium px-6 transition-all duration-300"
             >
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+              {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
             </Button>
           </form>
         </div>
