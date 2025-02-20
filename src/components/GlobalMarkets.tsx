@@ -641,6 +641,37 @@ export const GlobalMarkets = () => {
 
       <Card className="backdrop-blur bg-zinc-900">
         <CardHeader>
+          <h3 className="text-lg font-bold text-white">أداء الأسواق المالية</h3>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {Object.entries(markets).slice(0, 5).map(([key, market]) => (
+              <div key={key} className="bg-zinc-800/50 rounded-lg p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <h4 className="text-white font-medium">{market.name}</h4>
+                  <span className={`text-sm font-bold ${Math.random() > 0.5 ? 'text-green-400' : 'text-red-400'}`}>
+                    {(Math.random() * 2 - 1).toFixed(2)}%
+                  </span>
+                </div>
+                <div className="h-2 bg-zinc-700 rounded">
+                  <div 
+                    className="h-full rounded bg-gradient-to-r from-accent to-yellow-500"
+                    style={{ width: `${Math.random() * 100}%` }}
+                  />
+                </div>
+                <div className="mt-2 grid grid-cols-3 gap-2 text-xs text-gray-400">
+                  <span>حجم التداول: {(Math.random() * 1000000).toFixed(0)}</span>
+                  <span>عدد الصفقات: {(Math.random() * 1000).toFixed(0)}</span>
+                  <span>القيمة السوقية: {(Math.random() * 1000000).toFixed(0)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="backdrop-blur bg-zinc-900">
+        <CardHeader>
           <h3 className="text-lg font-bold text-white">سوق العملات الرقمية</h3>
         </CardHeader>
         <CardContent>

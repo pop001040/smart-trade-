@@ -115,7 +115,7 @@ export const ChatBot = () => {
           <img 
             src="/lovable-uploads/4a3e905d-f67b-4cbe-a0bc-3b7235a83584.png" 
             alt="AI Assistant" 
-            className="w-12 h-12 rounded-full border-2 border-accent/50"
+            className="w-16 h-16 rounded-full border-2 border-accent/50 hover:scale-110 transition-transform duration-300"
           />
           <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
             المساعد المالي الذكي
