@@ -32,9 +32,11 @@ export const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      const genAI = new GoogleGenerativeAI('AIzaSyA6JU8Fmw_S0ozBgLNC7gcZd2Ll0IMIaOA');
+      // تهيئة Google AI
+      const genAI = new GoogleGenerativeAI('AIzaSyCey6mppBs3G4OkMAYd6GvGe52m5kF3qR8');
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
+      // صياغة النص المطلوب
       const prompt = `أنت مساعد مالي خبير متخصص في الأسواق المالية العربية والعالمية.
         يجب أن تقدم تحليلاً دقيقاً جداً (بنسبة ثقة 90%) للأسهم والتوصيات المالية.
         قدم إجابات دقيقة وقصيرة باللغة العربية فقط.
@@ -46,11 +48,14 @@ export const ChatBot = () => {
 
         السؤال من المستخدم هو: ${input}`;
 
+      // محاولة الحصول على رد
       const result = await model.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
 
-      if (!text) throw new Error("لم نتمكن من الحصول على رد");
+      if (!text) {
+        throw new Error("لم نتمكن من الحصول على رد من المساعد");
+      }
 
       const assistantMessage = {
         role: 'assistant' as const,
@@ -58,11 +63,17 @@ export const ChatBot = () => {
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Chat error:', error);
+      
+      // رسالة خطأ أكثر تحديداً
+      const errorMessage = error.message?.includes('API') 
+        ? "حدث خطأ في الاتصال بالخدمة. يرجى المحاولة مرة أخرى بعد قليل."
+        : "عذراً، لم نتمكن من معالجة طلبك. يرجى المحاولة مرة أخرى.";
+
       toast({
         title: "حدث خطأ",
-        description: "عذراً، لم نتمكن من معالجة طلبك. يرجى المحاولة مرة أخرى.",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
