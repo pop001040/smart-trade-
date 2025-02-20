@@ -1,4 +1,3 @@
-
 import { StockTicker } from "@/components/StockTicker";
 import { Markets } from "@/components/Markets";
 import { StockChart } from "@/components/StockChart";
@@ -6,19 +5,11 @@ import { NewsSection } from "@/components/NewsSection";
 import { TopStocks } from "@/components/TopStocks";
 import { ChatBot } from "@/components/ChatBot";
 import { GlobalMarkets } from "@/components/GlobalMarkets";
-
 const Index = () => {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-primary via-primary/95 to-primary/90 rounded">
+  return <div className="min-h-screen bg-gradient-to-br from-primary via-primary/95 to-primary/90 rounded">
       {/* Hero Section with Video */}
       <div className="relative w-full bg-black text-center py-0 overflow-hidden">
-        <video 
-          className="w-full object-cover min-h-[600px]"
-          autoPlay
-          muted
-          loop
-          playsInline
-        >
+        <video className="w-full object-cover min-h-[600px]" autoPlay muted loop playsInline>
           <source src="/widgets-main-video.a3d7152108cd9db92d6c.webm" type="video/webm" />
           يرجى تحديث متصفحك لدعم تشغيل الفيديو
         </video>
@@ -26,10 +17,10 @@ const Index = () => {
 
       {/* Title Section */}
       <div className="bg-gradient-to-r from-primary to-primary/90 py-12 text-center">
-        <h1 className="text-6xl font-bold mb-4 text-zinc-50">
-          <span className="text-gray-50">خبير التداول</span> الذكي
+        <h1 className="text-6xl font-bold mb-4 text-amber-500">
+          <span className="text-amber-500">خبير التداول</span> الذكي
         </h1>
-        <p className="text-2xl text-gray-300 max-w-3xl mx-auto">
+        <p className="text-2xl max-w-3xl mx-auto text-stone-50">
           منصة التداول الأولى للأسواق العالمية والعربية
         </p>
       </div>
@@ -52,8 +43,6 @@ const Index = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
