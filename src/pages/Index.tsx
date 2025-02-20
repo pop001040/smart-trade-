@@ -11,26 +11,25 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary via-primary/95 to-primary/90 rounded">
       {/* Hero Section with Video */}
-      <div className="relative w-full bg-black text-center py-12 px-4 overflow-hidden">
-        <h1 className="font-bold mb-2 animate-fadeIn text-5xl text-zinc-50 my-0 mx-0">
-          <span className="text-gray-50">خبير التداول</span> الذكي
-        </h1>
-        <p className="max-w-2xl mx-auto text-gray-300 mb-8">
-          منصة التداول الأولى للأسواق العالمية والعربية
-        </p>
-        <div className="relative w-full max-w-4xl mx-auto">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 to-purple-600/20 rounded-lg"></div>
-          <video 
-            className="w-full aspect-[21/9] object-cover rounded-lg"
-            controls
-            autoPlay
-            muted
-            loop
-          >
-            <source src="/widgets-main-video.a3d7152108cd9db92d6c.webm" type="video/webm" />
-            يرجى تحديث متصفحك لدعم تشغيل الفيديو
-          </video>
+      <div className="relative w-full bg-black text-center py-0 overflow-hidden">
+        <div className="absolute inset-0 z-10 bg-black/50 flex flex-col items-center justify-center">
+          <h1 className="font-bold mb-2 animate-fadeIn text-5xl text-zinc-50 my-0 mx-0">
+            <span className="text-gray-50">خبير التداول</span> الذكي
+          </h1>
+          <p className="max-w-2xl mx-auto text-gray-300">
+            منصة التداول الأولى للأسواق العالمية والعربية
+          </p>
         </div>
+        <video 
+          className="w-full object-cover min-h-[600px]"
+          autoPlay
+          muted
+          loop
+          playsInline
+        >
+          <source src="/widgets-main-video.a3d7152108cd9db92d6c.webm" type="video/webm" />
+          يرجى تحديث متصفحك لدعم تشغيل الفيديو
+        </video>
       </div>
 
       <div className="container mx-auto px-4 py-8">
