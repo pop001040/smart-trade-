@@ -177,7 +177,7 @@ const TechnicalGauge = ({ value, type }: { value: number; type: 'شراء' | 'ح
           {/* Background Arc */}
           <svg className="w-full h-full" viewBox="0 0 200 100">
             <defs>
-              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y1="0%">
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#ef4444" />
                 <stop offset="50%" stopColor="#8b5cf6" />
                 <stop offset="100%" stopColor="#22c55e" />
