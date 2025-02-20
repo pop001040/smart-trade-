@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { TrendingUp, TrendingDown, Search, Bell, ChevronDown } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart } from 'recharts';
-
 const sectors = ["التكنولوجيا", "البنوك", "الطاقة", "الصناعة", "الاتصالات", "العقارات", "الرعاية الصحية", "السلع الاستهلاكية"];
 const forexData = {
   eurusd: {
@@ -49,12 +48,10 @@ const forexData = {
     price: "161.75"
   }
 };
-
 type StockDataPoint = {
   date: string;
   value: number;
 };
-
 const generateStockData = (days: number): StockDataPoint[] => {
   return Array.from({
     length: days
@@ -63,7 +60,6 @@ const generateStockData = (days: number): StockDataPoint[] => {
     value: Math.random() * 100 + 20
   }));
 };
-
 type Company = {
   id: number;
   symbol: string;
@@ -83,7 +79,6 @@ type Company = {
   market_cap: number;
   dividend_yield: number;
 };
-
 const generateCompanies = (count: number, marketPrefix: string): Company[] => {
   return Array.from({
     length: count
@@ -107,7 +102,6 @@ const generateCompanies = (count: number, marketPrefix: string): Company[] => {
     dividend_yield: Math.round(Math.random() * 10 * 100) / 100
   }));
 };
-
 const markets = {
   global: {
     name: "السوق العالمي",
@@ -134,7 +128,6 @@ const markets = {
     companies: generateCompanies(150, "QAT")
   }
 };
-
 const StockPriceChart = ({
   data
 }: {
@@ -166,12 +159,16 @@ const StockPriceChart = ({
       </ResponsiveContainer>
     </div>;
 };
+const TechnicalGauge = ({
+  value,
+  type
+}: {
+  value: number;
+  type: 'شراء' | 'حيادية' | 'بيع';
+}) => {
+  const angle = value / 100 * 180 - 90; // Convert value to angle between -90 and 90 degrees
 
-const TechnicalGauge = ({ value, type }: { value: number; type: 'شراء' | 'حيادية' | 'بيع' }) => {
-  const angle = (value / 100) * 180 - 90; // Convert value to angle between -90 and 90 degrees
-  
-  return (
-    <div className="relative w-full aspect-[2/1]">
+  return <div className="relative w-full aspect-[2/1]">
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="w-full h-full relative">
           {/* Background Arc */}
@@ -183,22 +180,10 @@ const TechnicalGauge = ({ value, type }: { value: number; type: 'شراء' | 'ح
                 <stop offset="100%" stopColor="#22c55e" />
               </linearGradient>
             </defs>
-            <path 
-              d="M20 80 A 60 60 0 0 1 180 80" 
-              fill="none" 
-              stroke="url(#gradient)" 
-              strokeWidth="8"
-            />
+            <path d="M20 80 A 60 60 0 0 1 180 80" fill="none" stroke="url(#gradient)" strokeWidth="8" />
             {/* Needle */}
             <g transform={`rotate(${angle}, 100, 80)`}>
-              <line 
-                x1="100" 
-                y1="80" 
-                x2="100" 
-                y2="30" 
-                stroke="white" 
-                strokeWidth="2"
-              />
+              <line x1="100" y1="80" x2="100" y2="30" stroke="white" strokeWidth="2" />
             </g>
             <text x="100" y="95" textAnchor="middle" fill="white" className="text-sm">
               {type}
@@ -206,87 +191,84 @@ const TechnicalGauge = ({ value, type }: { value: number; type: 'شراء' | 'ح
           </svg>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 const CurrencyMatrix = () => {
   const currencies = ['EUR', 'USD', 'JPY', 'GBP', 'CHF', 'AUD', 'CAD', 'NZD'];
   const rates = {
     'EUR/USD': 1.05171,
     'EUR/JPY': 157.123,
-    'GBP/USD': 1.2154,
+    'GBP/USD': 1.2154
     // ... add more rates
   };
-
-  return (
-    <div className="overflow-x-auto">
+  return <div className="overflow-x-auto">
       <table className="w-full text-sm text-left text-gray-300">
         <thead className="text-xs uppercase bg-zinc-800/50">
           <tr>
             <th className="p-2"></th>
-            {currencies.map(cur => (
-              <th key={cur} className="p-2">{cur}</th>
-            ))}
+            {currencies.map(cur => <th key={cur} className="p-2">{cur}</th>)}
           </tr>
         </thead>
         <tbody>
-          {currencies.map((baseCur, i) => (
-            <tr key={baseCur} className={i % 2 === 0 ? 'bg-zinc-800/30' : 'bg-zinc-800/10'}>
+          {currencies.map((baseCur, i) => <tr key={baseCur} className={i % 2 === 0 ? 'bg-zinc-800/30' : 'bg-zinc-800/10'}>
               <td className="p-2 font-medium">{baseCur}</td>
-              {currencies.map(quoteCur => (
-                <td key={`${baseCur}/${quoteCur}`} className="p-2">
-                  {baseCur === quoteCur ? (
-                    <span className="text-gray-500">1.0000</span>
-                  ) : (
-                    <span className={Math.random() > 0.5 ? 'text-green-400' : 'text-red-400'}>
+              {currencies.map(quoteCur => <td key={`${baseCur}/${quoteCur}`} className="p-2">
+                  {baseCur === quoteCur ? <span className="text-gray-500">1.0000</span> : <span className={Math.random() > 0.5 ? 'text-green-400' : 'text-red-400'}>
                       {(Math.random() * 2 + 0.5).toFixed(4)}
-                    </span>
-                  )}
-                </td>
-              ))}
-            </tr>
-          ))}
+                    </span>}
+                </td>)}
+            </tr>)}
         </tbody>
       </table>
-    </div>
-  );
+    </div>;
 };
-
 export const GlobalMarkets = () => {
   const [selectedMarket, setSelectedMarket] = useState("global");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [showDetails, setShowDetails] = useState(false);
-
   const filteredCompanies = markets[selectedMarket as keyof typeof markets].companies.filter(company => company.name.toLowerCase().includes(searchQuery.toLowerCase()) || company.symbol.toLowerCase().includes(searchQuery.toLowerCase()));
-
   const handleCompanyClick = (company: Company) => {
     setSelectedCompany(company);
     setShowDetails(true);
   };
-
-  const marketMovementData = [
-    { sector: "التكنولوجيا", performance: 2.5, volume: 1500000 },
-    { sector: "البنوك", performance: -1.2, volume: 2100000 },
-    { sector: "العقارات", performance: 0.8, volume: 900000 },
-    { sector: "الطاقة", performance: 3.2, volume: 1800000 },
-    { sector: "الصناعة", performance: -0.5, volume: 1200000 },
-    { sector: "الاتصالات", performance: 1.5, volume: 1000000 },
-    { sector: "الرعاية الصحية", performance: 2.1, volume: 1600000 },
-    { sector: "المواد الأساسية", performance: -1.8, volume: 1400000 }
-  ];
-
+  const marketMovementData = [{
+    sector: "التكنولوجيا",
+    performance: 2.5,
+    volume: 1500000
+  }, {
+    sector: "البنوك",
+    performance: -1.2,
+    volume: 2100000
+  }, {
+    sector: "العقارات",
+    performance: 0.8,
+    volume: 900000
+  }, {
+    sector: "الطاقة",
+    performance: 3.2,
+    volume: 1800000
+  }, {
+    sector: "الصناعة",
+    performance: -0.5,
+    volume: 1200000
+  }, {
+    sector: "الاتصالات",
+    performance: 1.5,
+    volume: 1000000
+  }, {
+    sector: "الرعاية الصحية",
+    performance: 2.1,
+    volume: 1600000
+  }, {
+    sector: "المواد الأساسية",
+    performance: -1.8,
+    volume: 1400000
+  }];
   return <div className="space-y-6">
       <div className="relative w-full bg-gradient-to-r from-purple-900/20 to-purple-600/20 rounded-lg overflow-hidden">
         <div className="absolute inset-0 bg-[url('/lovable-uploads/271a790a-fc9a-4b06-af07-fd064e0aa62b.png')] bg-cover bg-center opacity-20"></div>
-        <video 
-          className="w-full aspect-[21/9] object-cover rounded-lg"
-          controls
-          autoPlay
-          muted
-          loop
-        >
+        <video className="w-full aspect-[21/9] object-cover rounded-lg" controls autoPlay muted loop>
           <source src="/widgets-main-video.a3d7152108cd9db92d6c.webm" type="video/webm" />
           يرجى تحديث متصفحك لدعم تشغيل الفيديو
         </video>
@@ -341,8 +323,7 @@ export const GlobalMarkets = () => {
         </CardContent>
       </Card>
 
-      {showDetails && selectedCompany && (
-        <Card className="backdrop-blur bg-[#2D3047] text-white">
+      {showDetails && selectedCompany && <Card className="backdrop-blur bg-[#2D3047] text-white">
           <CardHeader className="border-b border-gray-700">
             <div className="flex justify-between items-center">
               <div>
@@ -354,27 +335,27 @@ export const GlobalMarkets = () => {
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="pt-4">
+          <CardContent className="pt-4 bg-zinc-950 hover:bg-zinc-800">
             <div className="grid grid-cols-1 gap-6">
               <StockPriceChart data={selectedCompany.stockData} />
               
               <Card className="bg-zinc-900/50">
-                <CardHeader>
-                  <h3 className="text-lg font-semibold">تحليلات فنية</h3>
-                  <p className="text-sm text-gray-400">تلخيص ما تقترحه المؤشرات</p>
+                <CardHeader className="bg-gray-950 hover:bg-gray-800">
+                  <h3 className="text-lg font-semibold text-slate-50">تحليلات فنية</h3>
+                  <p className="text-sm text-slate-50">تلخيص ما تقترحه المؤشرات</p>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="rounded-sm bg-neutral-950 hover:bg-neutral-800">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                      <h4 className="text-center mb-2">المتوسطات المتحركة</h4>
+                      <h4 className="text-center mb-2 text-gray-50">المتوسطات المتحركة</h4>
                       <TechnicalGauge value={75} type="شراء" />
                     </div>
                     <div>
-                      <h4 className="text-center mb-2">الملخص</h4>
+                      <h4 className="text-center mb-2 text-slate-50">الملخص</h4>
                       <TechnicalGauge value={50} type="حيادية" />
                     </div>
                     <div>
-                      <h4 className="text-center mb-2">المؤشرات الفنية</h4>
+                      <h4 className="text-center mb-2 text-zinc-50">المؤشرات الفنية</h4>
                       <TechnicalGauge value={25} type="بيع" />
                     </div>
                   </div>
@@ -428,7 +409,7 @@ export const GlobalMarkets = () => {
                   </div>
                 </div>
 
-                <div>
+                <div className="bg-gray-50">
                   <h3 className="text-lg mb-4">معلومات إضافية</h3>
                   <div className="space-y-4">
                     <div className="flex justify-between">
@@ -472,18 +453,15 @@ export const GlobalMarkets = () => {
               </div>
             </div>
           </CardContent>
-        </Card>
-      )}
+        </Card>}
 
       <Card className="backdrop-blur bg-zinc-900">
         <CardHeader>
           <div className="flex justify-between items-center">
             <h3 className="text-xl font-bold text-white">أسعار الفوركس المتقاطعة</h3>
-            <Button variant="outline" className="text-white">
-              احصل على الأداة
-            </Button>
+            
           </div>
-          <p className="text-sm text-gray-400">يتيح لك هذا الجدول عرض أسعار العملات المحددة لحظياً مقارنة بالعملات الرئيسية الأخرى.</p>
+          <p className="text-sm text-zinc-50">يتيح لك هذا الجدول عرض أسعار العملات المحددة لحظياً مقارنة بالعملات الرئيسية الأخرى.</p>
         </CardHeader>
         <CardContent>
           <CurrencyMatrix />
@@ -496,31 +474,18 @@ export const GlobalMarkets = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {marketMovementData.map((sector, index) => (
-              <div 
-                key={index} 
-                className={`p-4 rounded-lg ${
-                  sector.performance >= 0 ? 'bg-green-900/30' : 'bg-red-900/30'
-                }`}
-              >
+            {marketMovementData.map((sector, index) => <div key={index} className={`p-4 rounded-lg ${sector.performance >= 0 ? 'bg-green-900/30' : 'bg-red-900/30'}`}>
                 <h4 className="text-white font-medium mb-2">{sector.sector}</h4>
                 <div className="space-y-2">
-                  <p className={`text-lg font-bold ${
-                    sector.performance >= 0 ? 'text-green-400' : 'text-red-400'
-                  }`}>
+                  <p className={`text-lg font-bold ${sector.performance >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                     {sector.performance >= 0 ? '+' : ''}{sector.performance}%
-                    {sector.performance >= 0 ? (
-                      <TrendingUp className="h-4 w-4 inline mr-1" />
-                    ) : (
-                      <TrendingDown className="h-4 w-4 inline mr-1" />
-                    )}
+                    {sector.performance >= 0 ? <TrendingUp className="h-4 w-4 inline mr-1" /> : <TrendingDown className="h-4 w-4 inline mr-1" />}
                   </p>
                   <p className="text-gray-400 text-sm">
                     حجم التداول: {sector.volume.toLocaleString()}
                   </p>
                 </div>
-              </div>
-            ))}
+              </div>)}
           </div>
         </CardContent>
       </Card>

@@ -26,7 +26,7 @@ export const StockTicker = () => {
     price: 238.45,
     change: -2.1
   }]);
-  return <div className="w-full overflow-hidden py-2 border-b border-accent/20 bg-stone-950 hover:bg-stone-800">
+  return <div className="w-full overflow-hidden border-b border-accent/20 bg-stone-950 hover:bg-stone-800 my-0 py-0">
       <div className="animate-ticker-rtl whitespace-nowrap inline-block" style={{
       direction: 'rtl'
     }}>
