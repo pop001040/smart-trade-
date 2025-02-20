@@ -109,9 +109,9 @@ export const ChatBot = () => {
   };
   return <Card className="backdrop-blur-sm bg-gradient-to-br from-gray-900/90 to-gray-800/90 border border-white/20 shadow-xl">
       <CardHeader className="flex flex-row items-center gap-3 bg-gradient-to-r from-gray-950 to-gray-900 rounded-t-lg border-b border-white/10">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 my-0 py-0 px-[29px] mx-0">
           <img src="/lovable-uploads/4a3e905d-f67b-4cbe-a0bc-3b7235a83584.png" alt="AI Assistant" className="w-16 h-16 rounded-full border-2 border-accent/50 hover:scale-110 transition-transform duration-300" />
-          <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">المساعد الذكي</h3>
+          <h3 className="bg-gradient-to-r from-white to-gray-300 bg-clip-text mx-[21px] my-[11px] text-amber-500 font-semibold text-3xl">المساعد الذكي</h3>
         </div>
       </CardHeader>
       <CardContent className="bg-gradient-to-b from-gray-950 to-gray-900 p-4">
