@@ -5,12 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { TrendingUp, TrendingDown, Search, Bell, ChevronDown } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart } from 'recharts';
+
 interface Company {
   symbol: string;
   name: string;
   price: number;
   change: number;
 }
+
 const markets = {
   egypt: {
     name: "السوق المصري",
@@ -315,6 +317,7 @@ const markets = {
     }]
   }
 };
+
 const marketMovementData = [{
   sector: "التكنولوجيا",
   performance: 2.5,
@@ -348,10 +351,12 @@ const marketMovementData = [{
   performance: -1.8,
   volume: 1400000
 }];
+
 type StockDataPoint = {
   date: string;
   value: number;
 };
+
 const generateStockData = (days: number): StockDataPoint[] => {
   return Array.from({
     length: days
@@ -360,6 +365,7 @@ const generateStockData = (days: number): StockDataPoint[] => {
     value: Math.random() * 100 + 20
   }));
 };
+
 const StockPriceChart = ({
   data
 }: {
@@ -391,6 +397,7 @@ const StockPriceChart = ({
       </ResponsiveContainer>
     </div>;
 };
+
 const TechnicalGauge = ({
   value,
   type
@@ -422,6 +429,7 @@ const TechnicalGauge = ({
       </div>
     </div>;
 };
+
 const CurrencyMatrix = () => {
   const [rates, setRates] = useState({
     'EUR/USD': 1.05171,
@@ -467,12 +475,14 @@ const CurrencyMatrix = () => {
       </table>
     </div>;
 };
+
 export const GlobalMarkets = () => {
   const [selectedMarket, setSelectedMarket] = useState<string>("egypt");
   const [companies, setCompanies] = useState<Company[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+
   useEffect(() => {
     const fetchMarketData = async () => {
       try {
@@ -504,8 +514,11 @@ export const GlobalMarkets = () => {
     };
     fetchMarketData();
   }, [selectedMarket]);
+
   const filteredCompanies = companies.filter(company => company.name.includes(searchQuery) || company.symbol.includes(searchQuery));
-  return <div className="space-y-6">
+
+  return (
+    <div className="space-y-6">
       <Card className="backdrop-blur bg-zinc-950">
         <CardHeader>
           <div className="flex flex-col md:flex-row gap-4">
@@ -595,10 +608,7 @@ export const GlobalMarkets = () => {
 
       <Card className="backdrop-blur bg-zinc-900">
         <CardHeader>
-          <div className="flex justify-between items-center">
-            <h3 className="text-xl font-bold text-white">أسعار الفوركس المتقاطعة</h3>
-          </div>
-          <p className="text-sm text-white">يتيح لك هذا الجدول عرض أسعار العملات المحددة لحظياً مقارنة بالعملات الرئيسية الأخرى.</p>
+          <h3 className="text-lg font-bold text-white">أسعار الفوركس المتقاطعة</h3>
         </CardHeader>
         <CardContent>
           <CurrencyMatrix />
@@ -611,7 +621,8 @@ export const GlobalMarkets = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {marketMovementData.map((sector, index) => <div key={index} className={`p-4 rounded-lg ${sector.performance >= 0 ? 'bg-green-900/30' : 'bg-red-900/30'}`}>
+            {marketMovementData.map((sector, index) => (
+              <div key={index} className={`p-4 rounded-lg ${sector.performance >= 0 ? 'bg-green-900/30' : 'bg-red-900/30'}`}>
                 <h4 className="text-white font-medium mb-2">{sector.sector}</h4>
                 <div className="space-y-2">
                   <p className={`text-lg font-bold ${sector.performance >= 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -622,9 +633,24 @@ export const GlobalMarkets = () => {
                     حجم التداول: {sector.volume.toLocaleString()}
                   </p>
                 </div>
-              </div>)}
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
-    </div>;
+
+      <Card className="backdrop-blur bg-zinc-900">
+        <CardHeader>
+          <h3 className="text-lg font-bold text-white">سوق العملات الرقمية</h3>
+        </CardHeader>
+        <CardContent>
+          <img 
+            src="/lovable-uploads/76220a3d-4bf1-498f-88d6-e1c49697baab.png" 
+            alt="Digital Currency Market" 
+            className="w-full rounded-lg shadow-lg border border-zinc-800"
+          />
+        </CardContent>
+      </Card>
+    </div>
+  );
 };
