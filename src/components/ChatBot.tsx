@@ -32,8 +32,8 @@ export const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      // تهيئة Google AI مع مفتاح API جديد
-      const genAI = new GoogleGenerativeAI('AIzaSyCo4nRtCbQuyXVAqQt5G6zYyGXy8wmELkc');
+      // تهيئة Google AI مع مفتاح API الجديد
+      const genAI = new GoogleGenerativeAI('AIzaSyA6JU8Fmw_S0ozBgLNC7gcZd2Ll0IMIaOA');
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
       // صياغة النص المطلوب
