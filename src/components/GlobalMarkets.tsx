@@ -151,13 +151,90 @@ export const GlobalMarkets = () => {
 
   return (
     <div className="space-y-6">
-      {!showDetails && (
-        <div className="relative aspect-video w-full bg-zinc-900 rounded-lg">
-          <div className="absolute inset-0 flex items-center justify-center text-white">
-            مكان الفيديو الإعلاني
+      <div className="relative aspect-video w-full bg-zinc-900 rounded-lg">
+        <video 
+          className="w-full h-full object-cover rounded-lg"
+          controls
+          autoPlay
+          muted
+          loop
+        >
+          <source src="/path-to-your-video.mp4" type="video/mp4" />
+          يرجى تحديث متصفحك لدعم تشغيل الفيديو
+        </video>
+      </div>
+
+      <Card className="backdrop-blur bg-zinc-950">
+        <CardHeader>
+          <div className="flex flex-col md:flex-row gap-4">
+            <Select 
+              value={selectedMarket}
+              onValueChange={(value) => {
+                setSelectedMarket(value);
+                setSelectedCompany(null);
+                setShowDetails(false);
+              }}
+            >
+              <SelectTrigger className="w-[200px] bg-zinc-800 text-white border-zinc-700">
+                <SelectValue placeholder="اختر السوق" />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-800 text-white border-zinc-700">
+                {Object.entries(markets).map(([key, market]) => (
+                  <SelectItem 
+                    key={key} 
+                    value={key}
+                    className="hover:bg-zinc-700"
+                  >
+                    {market.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            <div className="flex-1 relative">
+              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+              <Input
+                className="pl-8"
+                placeholder="ابحث عن شركة..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
-      )}
+        </CardHeader>
+        <CardContent>
+          <Select 
+            value={selectedCompany?.id.toString() || ''} 
+            onValueChange={(value) => {
+              const company = filteredCompanies.find(c => c.id.toString() === value);
+              if (company) {
+                setSelectedCompany(company);
+                setShowDetails(true);
+              }
+            }}
+          >
+            <SelectTrigger className="w-full bg-zinc-800 text-white border-zinc-700">
+              <SelectValue placeholder="اختر شركة" />
+            </SelectTrigger>
+            <SelectContent className="bg-zinc-800 text-white border-zinc-700 max-h-[300px]">
+              {filteredCompanies.map((company) => (
+                <SelectItem 
+                  key={company.id} 
+                  value={company.id.toString()}
+                  className="hover:bg-zinc-700"
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <span>{company.name}</span>
+                    <span className={company.change >= 0 ? 'text-green-400' : 'text-red-400'}>
+                      ${company.price} ({company.change >= 0 ? '+' : ''}{company.change}%)
+                    </span>
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </CardContent>
+      </Card>
 
       {showDetails && selectedCompany && (
         <Card className="backdrop-blur bg-[#2D3047] text-white">
@@ -284,75 +361,6 @@ export const GlobalMarkets = () => {
                 <p className={data.change.startsWith('+') ? 'text-green-400' : 'text-red-400'}>
                   {data.change}
                 </p>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="backdrop-blur bg-zinc-950">
-        <CardHeader>
-          <div className="flex flex-col md:flex-row gap-4">
-            <Select 
-              value={selectedMarket}
-              onValueChange={(value) => {
-                setSelectedMarket(value);
-                setSelectedCompany(null);
-                setShowDetails(false);
-              }}
-            >
-              <SelectTrigger className="w-[200px] bg-zinc-800 text-white border-zinc-700">
-                <SelectValue placeholder="اختر السوق" />
-              </SelectTrigger>
-              <SelectContent className="bg-zinc-800 text-white border-zinc-700">
-                {Object.entries(markets).map(([key, market]) => (
-                  <SelectItem 
-                    key={key} 
-                    value={key}
-                    className="hover:bg-zinc-700"
-                  >
-                    {market.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            
-            <div className="flex-1 relative">
-              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
-              <Input
-                className="pl-8"
-                placeholder="ابحث عن شركة..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 gap-2">
-            {filteredCompanies.map((company) => (
-              <div
-                key={company.id}
-                onClick={() => handleCompanyClick(company)}
-                className="p-4 bg-white/5 rounded cursor-pointer hover:bg-white/10 transition-colors"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium text-white">{company.name}</h4>
-                    <p className="text-sm text-gray-400">{company.symbol}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-white">${company.price}</p>
-                    <p className={`text-sm ${company.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      {company.change >= 0 ? '+' : ''}{company.change}%
-                      {company.change >= 0 ? (
-                        <TrendingUp className="h-4 w-4 inline ml-1" />
-                      ) : (
-                        <TrendingDown className="h-4 w-4 inline ml-1" />
-                      )}
-                    </p>
-                  </div>
-                </div>
               </div>
             ))}
           </div>
