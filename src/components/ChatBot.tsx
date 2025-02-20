@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Send, Loader2, Key } from 'lucide-react';
+import { MessageSquare, Send, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -16,21 +17,11 @@ export const ChatBot = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [apiKey, setApiKey] = useState('');
   const { toast } = useToast();
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
-
-    if (!apiKey) {
-      toast({
-        title: "مطلوب مفتاح API",
-        description: "الرجاء إدخال مفتاح API الخاص بك أولاً",
-        variant: "destructive"
-      });
-      return;
-    }
 
     const userMessage = {
       role: 'user' as const,
@@ -42,26 +33,37 @@ export const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      const genAI = new GoogleGenerativeAI(apiKey);
+      const { data: { GEMINI_API_KEY }, error } = await supabase
+        .from('secrets')
+        .select('GEMINI_API_KEY')
+        .single();
+
+      if (error || !GEMINI_API_KEY) {
+        throw new Error("حدث خطأ في الوصول إلى مفتاح API");
+      }
+
+      const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-      const prompt = `أنت محلل مالي متخصص في الأسواق المالية العربية. عليك تقديم تحليل وتوصيات بنسبة ثقة 95% أو أعلى.
+      const prompt = `أنت محلل مالي متخصص في الأسواق المالية العربية مع تركيز خاص على توقعات وتحليلات عام 2025. عليك تقديم تحليل وتوصيات بنسبة ثقة 95% أو أعلى.
 
       قواعد مهمة يجب اتباعها:
-      1. قدم إجابات مباشرة ومختصرة وواضحة
-      2. كل توصية يجب أن تكون مدعومة بتحليل فني
-      3. حدد نسبة المخاطرة بدقة لكل توصية
-      4. اذكر نقاط الدخول والخروج بشكل محدد
-      5. اعتمد فقط على المؤشرات الفنية الموثوقة
-      6. قدم التحليل باللغة العربية فقط
+      1. قدم تحليلات وتوقعات تركز على عام 2025
+      2. قدم إجابات مباشرة ومختصرة وواضحة
+      3. كل توصية يجب أن تكون مدعومة بتحليل فني
+      4. حدد نسبة المخاطرة بدقة لكل توصية
+      5. اذكر نقاط الدخول والخروج بشكل محدد مع توقعات 2025
+      6. اعتمد فقط على المؤشرات الفنية الموثوقة
+      7. قدم التحليل باللغة العربية فقط
+      8. قدم توقعات مستقبلية للسوق في 2025
 
       يجب أن تحتوي إجابتك على:
-      - التحليل الفني المفصل مع المؤشرات
-      - نقاط الدخول المثالية (السعر المحدد)
+      - التحليل الفني المفصل مع المؤشرات وتوقعات 2025
+      - نقاط الدخول المثالية (السعر المحدد) مع النظرة المستقبلية
       - نقاط الخروج للربح والخسارة
-      - نسبة المخاطرة والعائد المتوقع
+      - نسبة المخاطرة والعائد المتوقع في 2025
       - توصية نهائية واضحة (شراء/بيع/انتظار)
-      - مستويات الدعم والمقاومة الرئيسية
+      - مستويات الدعم والمقاومة الرئيسية المتوقعة في 2025
 
       السؤال من العميل هو: ${input}`;
 
@@ -85,9 +87,9 @@ export const ChatBot = () => {
       let errorMessage = "عذراً، لم نتمكن من معالجة طلبك. يرجى المحاولة مرة أخرى.";
       
       if (error.message?.includes('API')) {
-        errorMessage = "حدث خطأ في الاتصال بالخدمة. يرجى التأكد من صحة مفتاح API والمحاولة مرة أخرى.";
+        errorMessage = "حدث خطأ في الاتصال بالخدمة. يرجى التحقق من المفتاح والمحاولة مرة أخرى.";
       } else if (error.status === 403) {
-        errorMessage = "خطأ في التحقق من صحة المفتاح. يرجى التأكد من صحة مفتاح API.";
+        errorMessage = "خطأ في التحقق من صحة المفتاح. يرجى التحقق من صحة المفتاح.";
       }
 
       toast({
@@ -104,7 +106,7 @@ export const ChatBot = () => {
     return (
       <div className="mt-4 bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg p-4 shadow-lg border border-gray-700">
         <div className="flex justify-between items-center">
-          <span className="text-white font-semibold text-lg">مستوى الثقة في التحليل</span>
+          <span className="text-white font-semibold text-lg">مستوى الثقة في تحليلات 2025</span>
           <span className={`${value >= 90 ? 'text-green-400' : 'text-yellow-400'} font-bold text-lg`}>
             {value}%
           </span>
@@ -129,36 +131,11 @@ export const ChatBot = () => {
             className="w-16 h-16 rounded-full border-2 border-accent/50 hover:scale-110 transition-transform duration-300"
           />
           <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-            المساعد المالي الذكي
+            المساعد المالي الذكي - توقعات 2025
           </h3>
         </div>
       </CardHeader>
       <CardContent className="bg-gradient-to-b from-gray-950 to-gray-900 p-4">
-        <div className="mb-4">
-          <div className="flex gap-2">
-            <Input
-              type="password"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              placeholder="أدخل مفتاح API الخاص بك هنا..."
-              className="bg-white/5 border-white/10 text-white placeholder:text-gray-400"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              className="bg-white/5 border-white/10 text-white hover:bg-white/10"
-              onClick={() => setApiKey('')}
-            >
-              <Key className="h-4 w-4" />
-            </Button>
-          </div>
-          {!apiKey && (
-            <p className="text-amber-400 text-sm mt-2">
-              يرجى إدخال مفتاح API للبدء في استخدام المساعد
-            </p>
-          )}
-        </div>
-        
         <div className="h-[400px] flex flex-col">
           <div className="flex-1 overflow-y-auto space-y-4 mb-4 p-4 bg-stone-950/80 rounded-lg">
             {messages.map((message, index) => (
@@ -194,12 +171,12 @@ export const ChatBot = () => {
             <Input
               value={input}
               onChange={e => setInput(e.target.value)}
-              placeholder="اكتب سؤالك عن السهم هنا..."
+              placeholder="اكتب سؤالك عن توقعات السهم في 2025..."
               className="bg-white/5 border-white/10 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-accent/50 transition-all"
             />
             <Button
               type="submit"
-              disabled={isLoading || !apiKey}
+              disabled={isLoading}
               className="bg-gradient-to-r from-accent to-yellow-500 hover:from-accent/90 hover:to-yellow-500/90 text-primary font-medium px-6 transition-all duration-300"
             >
               {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
