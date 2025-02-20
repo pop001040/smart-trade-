@@ -167,6 +167,92 @@ const StockPriceChart = ({
     </div>;
 };
 
+const TechnicalGauge = ({ value, type }: { value: number; type: 'شراء' | 'حيادية' | 'بيع' }) => {
+  const angle = (value / 100) * 180 - 90; // Convert value to angle between -90 and 90 degrees
+  
+  return (
+    <div className="relative w-full aspect-[2/1]">
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-full h-full relative">
+          {/* Background Arc */}
+          <svg className="w-full h-full" viewBox="0 0 200 100">
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y1="0%">
+                <stop offset="0%" stopColor="#ef4444" />
+                <stop offset="50%" stopColor="#8b5cf6" />
+                <stop offset="100%" stopColor="#22c55e" />
+              </linearGradient>
+            </defs>
+            <path 
+              d="M20 80 A 60 60 0 0 1 180 80" 
+              fill="none" 
+              stroke="url(#gradient)" 
+              strokeWidth="8"
+            />
+            {/* Needle */}
+            <g transform={`rotate(${angle}, 100, 80)`}>
+              <line 
+                x1="100" 
+                y1="80" 
+                x2="100" 
+                y2="30" 
+                stroke="white" 
+                strokeWidth="2"
+              />
+            </g>
+            <text x="100" y="95" textAnchor="middle" fill="white" className="text-sm">
+              {type}
+            </text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const CurrencyMatrix = () => {
+  const currencies = ['EUR', 'USD', 'JPY', 'GBP', 'CHF', 'AUD', 'CAD', 'NZD'];
+  const rates = {
+    'EUR/USD': 1.05171,
+    'EUR/JPY': 157.123,
+    'GBP/USD': 1.2154,
+    // ... add more rates
+  };
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm text-left text-gray-300">
+        <thead className="text-xs uppercase bg-zinc-800/50">
+          <tr>
+            <th className="p-2"></th>
+            {currencies.map(cur => (
+              <th key={cur} className="p-2">{cur}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {currencies.map((baseCur, i) => (
+            <tr key={baseCur} className={i % 2 === 0 ? 'bg-zinc-800/30' : 'bg-zinc-800/10'}>
+              <td className="p-2 font-medium">{baseCur}</td>
+              {currencies.map(quoteCur => (
+                <td key={`${baseCur}/${quoteCur}`} className="p-2">
+                  {baseCur === quoteCur ? (
+                    <span className="text-gray-500">1.0000</span>
+                  ) : (
+                    <span className={Math.random() > 0.5 ? 'text-green-400' : 'text-red-400'}>
+                      {(Math.random() * 2 + 0.5).toFixed(4)}
+                    </span>
+                  )}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 export const GlobalMarkets = () => {
   const [selectedMarket, setSelectedMarket] = useState("global");
   const [searchQuery, setSearchQuery] = useState("");
@@ -192,9 +278,16 @@ export const GlobalMarkets = () => {
   ];
 
   return <div className="space-y-6">
-      <div className="relative aspect-video w-full bg-zinc-900 rounded-lg">
-        <video className="w-full h-full object-cover rounded-lg" controls autoPlay muted loop>
-          <source src="/path-to-your-video.mp4" type="video/mp4" />
+      <div className="relative w-full bg-gradient-to-r from-purple-900/20 to-purple-600/20 rounded-lg overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/lovable-uploads/271a790a-fc9a-4b06-af07-fd064e0aa62b.png')] bg-cover bg-center opacity-20"></div>
+        <video 
+          className="w-full aspect-[21/9] object-cover rounded-lg"
+          controls
+          autoPlay
+          muted
+          loop
+        >
+          <source src="/widgets-main-video.a3d7152108cd9db92d6c.webm" type="video/webm" />
           يرجى تحديث متصفحك لدعم تشغيل الفيديو
         </video>
       </div>
@@ -248,24 +341,46 @@ export const GlobalMarkets = () => {
         </CardContent>
       </Card>
 
-      {showDetails && selectedCompany && <Card className="backdrop-blur bg-[#2D3047] text-white">
+      {showDetails && selectedCompany && (
+        <Card className="backdrop-blur bg-[#2D3047] text-white">
           <CardHeader className="border-b border-gray-700">
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-xl font-bold">{selectedCompany.name}</h2>
                 <p className="text-sm text-gray-400">{selectedCompany.symbol}</p>
               </div>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="icon" onClick={() => setShowDetails(false)} className="font-medium bg-gray-950 hover:bg-gray-800 text-stone-50">
-                  <span className="text-lg text-zinc-950">×</span>
-                </Button>
-              </div>
+              <Button variant="outline" size="icon" onClick={() => setShowDetails(false)}>
+                <span className="text-lg">×</span>
+              </Button>
             </div>
           </CardHeader>
-          <CardContent className="pt-4 bg-slate-950 hover:bg-slate-800">
+          <CardContent className="pt-4">
             <div className="grid grid-cols-1 gap-6">
               <StockPriceChart data={selectedCompany.stockData} />
               
+              <Card className="bg-zinc-900/50">
+                <CardHeader>
+                  <h3 className="text-lg font-semibold">تحليلات فنية</h3>
+                  <p className="text-sm text-gray-400">تلخيص ما تقترحه المؤشرات</p>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <h4 className="text-center mb-2">المتوسطات المتحركة</h4>
+                      <TechnicalGauge value={75} type="شراء" />
+                    </div>
+                    <div>
+                      <h4 className="text-center mb-2">الملخص</h4>
+                      <TechnicalGauge value={50} type="حيادية" />
+                    </div>
+                    <div>
+                      <h4 className="text-center mb-2">المؤشرات الفنية</h4>
+                      <TechnicalGauge value={25} type="بيع" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <h3 className="text-lg mb-4">التحليل الفني</h3>
@@ -357,31 +472,21 @@ export const GlobalMarkets = () => {
               </div>
             </div>
           </CardContent>
-        </Card>}
+        </Card>
+      )}
 
       <Card className="backdrop-blur bg-zinc-900">
         <CardHeader>
-          <h3 className="text-lg font-bold text-white">أداء الفوركس</h3>
+          <div className="flex justify-between items-center">
+            <h3 className="text-xl font-bold text-white">أسعار الفوركس المتقاطعة</h3>
+            <Button variant="outline" className="text-white">
+              احصل على الأداة
+            </Button>
+          </div>
+          <p className="text-sm text-gray-400">يتيح لك هذا الجدول عرض أسعار العملات المحددة لحظياً مقارنة بالعملات الرئيسية الأخرى.</p>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {Object.entries(forexData).map(([key, data]) => (
-              <div key={key} className="bg-zinc-800 p-4 rounded-lg">
-                <h4 className="text-white font-medium">{data.name}</h4>
-                <div className="mt-2">
-                  <p className="text-white text-lg font-bold">{data.price}</p>
-                  <p className={data.change.startsWith('+') ? 'text-green-400' : 'text-red-400'}>
-                    {data.change}
-                    {data.change.startsWith('+') ? (
-                      <TrendingUp className="h-4 w-4 inline mr-1" />
-                    ) : (
-                      <TrendingDown className="h-4 w-4 inline mr-1" />
-                    )}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <CurrencyMatrix />
         </CardContent>
       </Card>
 
