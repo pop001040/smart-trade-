@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -136,7 +137,7 @@ export const ChatBot = () => {
             className="w-16 h-16 rounded-full border-2 border-accent/50 hover:scale-110 transition-transform duration-300"
           />
           <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-            المساعد المالي الذكي - توقعات 2025
+            د
           </h3>
         </div>
       </CardHeader>
