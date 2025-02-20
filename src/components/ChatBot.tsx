@@ -1,8 +1,9 @@
+
 import { useState } from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Send, Loader2 } from 'lucide-react';
+import { MessageSquare, Send, Loader2, Key } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
@@ -15,11 +16,21 @@ export const ChatBot = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [apiKey, setApiKey] = useState('');
   const { toast } = useToast();
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
+
+    if (!apiKey) {
+      toast({
+        title: "مطلوب مفتاح API",
+        description: "الرجاء إدخال مفتاح API الخاص بك أولاً",
+        variant: "destructive"
+      });
+      return;
+    }
 
     const userMessage = {
       role: 'user' as const,
@@ -31,7 +42,7 @@ export const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      const genAI = new GoogleGenerativeAI('AIzaSyA6JU8Fmw_S0ozBgLNC7gcZd2Ll0IMIaOA');
+      const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
       const prompt = `أنت محلل مالي متخصص في الأسواق المالية العربية. عليك تقديم تحليل وتوصيات بنسبة ثقة 95% أو أعلى.
@@ -74,9 +85,9 @@ export const ChatBot = () => {
       let errorMessage = "عذراً، لم نتمكن من معالجة طلبك. يرجى المحاولة مرة أخرى.";
       
       if (error.message?.includes('API')) {
-        errorMessage = "حدث خطأ في الاتصال بالخدمة. يرجى المحاولة مرة أخرى بعد قليل.";
+        errorMessage = "حدث خطأ في الاتصال بالخدمة. يرجى التأكد من صحة مفتاح API والمحاولة مرة أخرى.";
       } else if (error.status === 403) {
-        errorMessage = "خطأ في التحقق من صحة المفتاح. يرجى التأكد من تفعيل الخدمة.";
+        errorMessage = "خطأ في التحقق من صحة المفتاح. يرجى التأكد من صحة مفتاح API.";
       }
 
       toast({
@@ -123,6 +134,31 @@ export const ChatBot = () => {
         </div>
       </CardHeader>
       <CardContent className="bg-gradient-to-b from-gray-950 to-gray-900 p-4">
+        <div className="mb-4">
+          <div className="flex gap-2">
+            <Input
+              type="password"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              placeholder="أدخل مفتاح API الخاص بك هنا..."
+              className="bg-white/5 border-white/10 text-white placeholder:text-gray-400"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              className="bg-white/5 border-white/10 text-white hover:bg-white/10"
+              onClick={() => setApiKey('')}
+            >
+              <Key className="h-4 w-4" />
+            </Button>
+          </div>
+          {!apiKey && (
+            <p className="text-amber-400 text-sm mt-2">
+              يرجى إدخال مفتاح API للبدء في استخدام المساعد
+            </p>
+          )}
+        </div>
+        
         <div className="h-[400px] flex flex-col">
           <div className="flex-1 overflow-y-auto space-y-4 mb-4 p-4 bg-stone-950/80 rounded-lg">
             {messages.map((message, index) => (
@@ -163,7 +199,7 @@ export const ChatBot = () => {
             />
             <Button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !apiKey}
               className="bg-gradient-to-r from-accent to-yellow-500 hover:from-accent/90 hover:to-yellow-500/90 text-primary font-medium px-6 transition-all duration-300"
             >
               {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
@@ -174,3 +210,4 @@ export const ChatBot = () => {
     </Card>
   );
 };
+
