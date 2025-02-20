@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -87,4 +86,17 @@
 
 .text-gradient {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-accent to-secondary;
+}
+
+@keyframes ticker-rtl {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-ticker-rtl {
+  animation: ticker-rtl 30s linear infinite;
 }

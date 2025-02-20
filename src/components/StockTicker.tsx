@@ -18,14 +18,14 @@ export const StockTicker = () => {
 
   return (
     <div className="w-full overflow-hidden bg-primary py-2 border-b border-accent/20">
-      <div className="animate-ticker whitespace-nowrap inline-block">
+      <div className="animate-ticker-rtl whitespace-nowrap inline-block" style={{ direction: 'rtl' }}>
         {stocks.map((stock, index) => (
           <span
             key={index}
             className="inline-block px-4 text-sm font-medium"
           >
             <span className="text-white">{stock.symbol}</span>
-            <span className={`ml-2 ${stock.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+            <span className={`mr-2 ${stock.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
               ${stock.price.toFixed(2)} ({stock.change > 0 ? '+' : ''}{stock.change}%)
             </span>
           </span>

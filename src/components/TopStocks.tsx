@@ -1,5 +1,5 @@
 
-import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 const topStocks = [
@@ -52,43 +52,40 @@ const topStocks = [
 
 export const TopStocks = () => {
   return (
-    <Card className="backdrop-blur-sm bg-white/10 border border-white/20">
-      <CardHeader>
-        <h3 className="text-xl font-bold text-white">أفضل الأسهم أداءً</h3>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+    <div className="mb-8">
+      <h2 className="text-2xl font-bold text-white mb-6 text-right">أفضل الأسهم أداءً</h2>
+      <div className="overflow-x-auto rtl:space-x-reverse">
+        <div className="flex space-x-4 rtl:space-x-reverse pb-4" style={{ direction: 'rtl' }}>
           {topStocks.map((stock, index) => (
-            <div
-              key={index}
-              className="p-4 rounded-lg hover:bg-white/5 transition-colors border border-white/10"
-            >
-              <div className="flex justify-between items-start mb-2">
-                <div className="text-right">
-                  <h4 className="text-white font-medium">{stock.symbol}</h4>
-                  <p className="text-sm text-gray-400">{stock.name}</p>
-                  <p className="text-xs text-accent/80 mt-1">{stock.sector}</p>
+            <Card key={index} className="min-w-[300px] backdrop-blur-sm bg-white/10 border border-white/20">
+              <CardContent className="p-4">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="text-right">
+                    <h4 className="text-white font-medium">{stock.symbol}</h4>
+                    <p className="text-sm text-gray-400">{stock.name}</p>
+                    <p className="text-xs text-accent/80 mt-1">{stock.sector}</p>
+                  </div>
+                  <div className="text-left">
+                    <p className="text-white font-medium">${stock.price.toFixed(2)}</p>
+                    <span className={`flex items-center ${stock.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {stock.change >= 0 ? (
+                        <TrendingUp className="w-4 h-4 ml-1" />
+                      ) : (
+                        <TrendingDown className="w-4 h-4 ml-1" />
+                      )}
+                      {stock.change > 0 ? '+' : ''}{stock.change}%
+                    </span>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <p className="text-white font-medium">${stock.price.toFixed(2)}</p>
-                  <span className={`flex items-center ${stock.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                    {stock.change >= 0 ? (
-                      <TrendingUp className="w-4 h-4 ml-1" />
-                    ) : (
-                      <TrendingDown className="w-4 h-4 ml-1" />
-                    )}
-                    {stock.change > 0 ? '+' : ''}{stock.change}%
-                  </span>
+                <div className="flex justify-between text-xs text-gray-400 mt-2 pt-2 border-t border-white/10">
+                  <span>القيمة السوقية: {stock.marketCap}</span>
+                  <span>حجم التداول: {stock.volume}</span>
                 </div>
-              </div>
-              <div className="flex justify-between text-xs text-gray-400 mt-2 pt-2 border-t border-white/10">
-                <span>القيمة السوقية: {stock.marketCap}</span>
-                <span>حجم التداول: {stock.volume}</span>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
