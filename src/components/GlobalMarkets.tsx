@@ -17,31 +17,131 @@ const markets = {
   egypt: {
     name: "السوق المصري",
     symbols: [
-      { symbol: "COMI.CA", name: "البنك التجاري الدولي" },
-      { symbol: "HRHO.CA", name: "المجموعة المالية هيرميس" },
-      { symbol: "TMGH.CA", name: "مجموعة طلعت مصطفى" },
-      { symbol: "EAST.CA", name: "الشرقية للدخان" },
-      { symbol: "SWDY.CA", name: "السويدي إليكتريك" }
+      { symbol: "HRHO.CA", name: "EFG Hermes" },
+      { symbol: "CICH.CA", name: "CI Capital" },
+      { symbol: "BTFH.CA", name: "Beltone Financial" },
+      { symbol: "PHDC.CA", name: "Pharos Holding" },
+      { symbol: "HELI.CA", name: "HC Securities & Investment" },
+      { symbol: "PIOH.CA", name: "Pioneers Holding" },
+      { symbol: "AAIB.CA", name: "Arab African International Bank" },
+      { symbol: "BMII.CA", name: "Banque Misr Investment" },
+      { symbol: "NBKE.CA", name: "National Bank of Egypt Investment" },
+      { symbol: "CCAP.CA", name: "Cairo Capital Securities" }
     ]
   },
   saudi: {
     name: "السوق السعودي",
     symbols: [
-      { symbol: "2222.SR", name: "أرامكو السعودية" },
-      { symbol: "1180.SR", name: "الأهلي السعودي" },
-      { symbol: "2010.SR", name: "سابك" },
-      { symbol: "7010.SR", name: "الاتصالات السعودية" },
-      { symbol: "1120.SR", name: "الراجحي" }
+      { symbol: "1120.SR", name: "Al Rajhi Capital" },
+      { symbol: "1180.SR", name: "NCB Capital (SNB Capital)" },
+      { symbol: "DERAYAH.SR", name: "Derayah Financial" },
+      { symbol: "ALJAZIRA.SR", name: "Aljazira Capital" },
+      { symbol: "ICAP.SR", name: "Alistithmar Capital" },
+      { symbol: "SAMBA.SR", name: "Samba Capital" },
+      { symbol: "MULKIA.SR", name: "Mulkia Investment" },
+      { symbol: "ANB.SR", name: "ANB Invest" },
+      { symbol: "RIYADCAP.SR", name: "Riyad Capital" },
+      { symbol: "FRANSI.SR", name: "Saudi Fransi Capital" }
     ]
   },
   kuwait: {
     name: "السوق الكويتي",
     symbols: [
-      { symbol: "KFH.KW", name: "بيت التمويل الكويتي" },
-      { symbol: "NBK.KW", name: "بنك الكويت الوطني" },
-      { symbol: "ZAIN.KW", name: "زين" },
-      { symbol: "AGLT.KW", name: "أجيليتي" },
-      { symbol: "BOUK.KW", name: "بنك بوبيان" }
+      { symbol: "XTB.KW", name: "XTB Kuwait" },
+      { symbol: "MARKAZ.KW", name: "Kuwait Financial Centre" },
+      { symbol: "KAMCO.KW", name: "KAMCO Invest" },
+      { symbol: "NBK.KW", name: "NBK Capital" },
+      { symbol: "GIC.KW", name: "Gulf Investment Corporation" },
+      { symbol: "BOURSA.KW", name: "Boursa Kuwait Securities Company" },
+      { symbol: "BAYAN.KW", name: "Bayan Investment Company" },
+      { symbol: "OSOUL.KW", name: "Osoul Investment Company" },
+      { symbol: "NIC.KW", name: "National Investments Company" },
+      { symbol: "ALMASAR.KW", name: "Al Masar Investment" }
+    ]
+  },
+  oman: {
+    name: "السوق العماني",
+    symbols: [
+      { symbol: "EXNESS.OM", name: "Exness Oman" },
+      { symbol: "UBHAR.OM", name: "Ubhar Capital" },
+      { symbol: "GBCM.OM", name: "Gulf Baader Capital Markets" },
+      { symbol: "USC.OM", name: "United Securities Oman" },
+      { symbol: "VISION.OM", name: "Vision Investment Services" },
+      { symbol: "MADINA.OM", name: "Al-Madina Investment" },
+      { symbol: "TANMIA.OM", name: "Tanmia Capital" },
+      { symbol: "MUSCAT.OM", name: "Muscat Capital" },
+      { symbol: "KAWTHAR.OM", name: "Al Kawthar Investment" },
+      { symbol: "OAB.OM", name: "Oman Arab Bank Brokerage" }
+    ]
+  },
+  qatar: {
+    name: "السوق القطري",
+    symbols: [
+      { symbol: "QINVEST.QA", name: "QInvest" },
+      { symbol: "DBSEC.QA", name: "Doha Bank Securities" },
+      { symbol: "QNBCAP.QA", name: "QNB Capital" },
+      { symbol: "MASRAF.QA", name: "Masraf Al Rayan Securities" },
+      { symbol: "QIBSEC.QA", name: "Qatar Islamic Bank Securities" },
+      { symbol: "BARWA.QA", name: "Barwa Capital" },
+      { symbol: "KHALIJ.QA", name: "Al Khalij Capital" },
+      { symbol: "KOOT.QA", name: "Al Koot Securities" },
+      { symbol: "ASMAKH.QA", name: "Al Asmakh Investment" },
+      { symbol: "QFS.QA", name: "Qatar Financial Services" }
+    ]
+  },
+  global: {
+    name: "الأسواق العالمية",
+    symbols: [
+      { symbol: "PPSTR", name: "Pepperstone" },
+      { symbol: "FXTM", name: "ForexTime" },
+      { symbol: "FPM", name: "FP Markets" },
+      { symbol: "FOREX", name: "Forex.com" },
+      { symbol: "IGM", name: "IG Markets" },
+      { symbol: "IBKR", name: "Interactive Brokers" },
+      { symbol: "OANDA", name: "OANDA" },
+      { symbol: "SAXO", name: "Saxo Bank" },
+      { symbol: "TDAM", name: "TD Ameritrade" },
+      { symbol: "ETRADE", name: "E*TRADE" },
+      { symbol: "HOOD", name: "Robinhood" },
+      { symbol: "FID", name: "Fidelity Investments" },
+      { symbol: "MER", name: "Merrill Edge" },
+      { symbol: "ALP", name: "Alpari" },
+      { symbol: "XMG", name: "XM Group" },
+      { symbol: "HF", name: "HotForex" },
+      { symbol: "ADM", name: "Admiral Markets" },
+      { symbol: "CMC", name: "CMC Markets" },
+      { symbol: "CITY", name: "City Index" },
+      { symbol: "PLUS", name: "Plus500" }
+    ]
+  },
+  banks: {
+    name: "البنوك العالمية",
+    symbols: [
+      { symbol: "GS", name: "Goldman Sachs" },
+      { symbol: "MS", name: "Morgan Stanley" },
+      { symbol: "JPM", name: "J.P. Morgan Chase" },
+      { symbol: "C", name: "Citigroup" },
+      { symbol: "BAC", name: "Bank of America" },
+      { symbol: "DB", name: "Deutsche Bank" },
+      { symbol: "UBS", name: "UBS Group" },
+      { symbol: "CS", name: "Credit Suisse" },
+      { symbol: "BNP", name: "BNP Paribas" },
+      { symbol: "HSBC", name: "HSBC Holdings" }
+    ]
+  },
+  digital: {
+    name: "منصات التداول الإلكترونية",
+    symbols: [
+      { symbol: "ETORO", name: "eToro" },
+      { symbol: "212", name: "Trading 212" },
+      { symbol: "DEGIRO", name: "Degiro" },
+      { symbol: "REVOLUT", name: "Revolut Trading" },
+      { symbol: "PRT", name: "ProRealTime" },
+      { symbol: "TR", name: "TradeRepublic" },
+      { symbol: "FXPR", name: "FxPrimus" },
+      { symbol: "ICM", name: "ICM Capital" },
+      { symbol: "DARWIN", name: "Darwinex" },
+      { symbol: "LMAX", name: "LMAX Exchange" }
     ]
   }
 };
@@ -215,10 +315,16 @@ export const GlobalMarkets = () => {
               change: parseFloat(data['Global Quote']['09. change'])
             };
           }
-          return null;
+          // إذا لم نتمكن من الحصول على البيانات من API، نقوم بإرجاع بيانات افتراضية
+          return {
+            symbol: stock.symbol,
+            name: stock.name,
+            price: 0,
+            change: 0
+          };
         });
 
-        const results = (await Promise.all(promises)).filter(Boolean) as Company[];
+        const results = await Promise.all(promises);
         setCompanies(results);
       } catch (error) {
         console.error('Error fetching market data:', error);
@@ -233,7 +339,8 @@ export const GlobalMarkets = () => {
     company.symbol.includes(searchQuery)
   );
 
-  return <div className="space-y-6">
+  return (
+    <div className="space-y-6">
       <Card className="backdrop-blur bg-zinc-950">
         <CardHeader>
           <div className="flex flex-col md:flex-row gap-4">
@@ -381,5 +488,6 @@ export const GlobalMarkets = () => {
           </div>
         </CardContent>
       </Card>
-    </div>;
+    </div>
+  );
 };
