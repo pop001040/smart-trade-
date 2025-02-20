@@ -5,25 +5,56 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { TrendingUp, TrendingDown, Search, Bell, ChevronDown } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart } from 'recharts';
+
 const sectors = ["التكنولوجيا", "البنوك", "الطاقة", "الصناعة", "الاتصالات", "العقارات", "الرعاية الصحية", "السلع الاستهلاكية"];
 const forexData = {
   eurusd: {
     name: "EUR/USD",
-    change: "+0.32%"
+    change: "+0.32%",
+    price: "1.0934"
   },
   gbpusd: {
     name: "GBP/USD",
-    change: "-0.15%"
+    change: "-0.15%",
+    price: "1.2654"
   },
   usdjpy: {
     name: "USD/JPY",
-    change: "+0.45%"
+    change: "+0.45%",
+    price: "147.89"
+  },
+  usdchf: {
+    name: "USD/CHF",
+    change: "-0.28%",
+    price: "0.8745"
+  },
+  audusd: {
+    name: "AUD/USD",
+    change: "+0.18%",
+    price: "0.6589"
+  },
+  usdcad: {
+    name: "USD/CAD",
+    change: "-0.22%",
+    price: "1.3456"
+  },
+  nzdusd: {
+    name: "NZD/USD",
+    change: "+0.25%",
+    price: "0.6123"
+  },
+  eurjpy: {
+    name: "EUR/JPY",
+    change: "+0.38%",
+    price: "161.75"
   }
 };
+
 type StockDataPoint = {
   date: string;
   value: number;
 };
+
 const generateStockData = (days: number): StockDataPoint[] => {
   return Array.from({
     length: days
@@ -32,6 +63,7 @@ const generateStockData = (days: number): StockDataPoint[] => {
     value: Math.random() * 100 + 20
   }));
 };
+
 type Company = {
   id: number;
   symbol: string;
@@ -51,6 +83,7 @@ type Company = {
   market_cap: number;
   dividend_yield: number;
 };
+
 const generateCompanies = (count: number, marketPrefix: string): Company[] => {
   return Array.from({
     length: count
@@ -74,6 +107,7 @@ const generateCompanies = (count: number, marketPrefix: string): Company[] => {
     dividend_yield: Math.round(Math.random() * 10 * 100) / 100
   }));
 };
+
 const markets = {
   global: {
     name: "السوق العالمي",
@@ -100,6 +134,7 @@ const markets = {
     companies: generateCompanies(150, "QAT")
   }
 };
+
 const StockPriceChart = ({
   data
 }: {
@@ -131,16 +166,31 @@ const StockPriceChart = ({
       </ResponsiveContainer>
     </div>;
 };
+
 export const GlobalMarkets = () => {
   const [selectedMarket, setSelectedMarket] = useState("global");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+
   const filteredCompanies = markets[selectedMarket as keyof typeof markets].companies.filter(company => company.name.toLowerCase().includes(searchQuery.toLowerCase()) || company.symbol.toLowerCase().includes(searchQuery.toLowerCase()));
+
   const handleCompanyClick = (company: Company) => {
     setSelectedCompany(company);
     setShowDetails(true);
   };
+
+  const marketMovementData = [
+    { sector: "التكنولوجيا", performance: 2.5, volume: 1500000 },
+    { sector: "البنوك", performance: -1.2, volume: 2100000 },
+    { sector: "العقارات", performance: 0.8, volume: 900000 },
+    { sector: "الطاقة", performance: 3.2, volume: 1800000 },
+    { sector: "الصناعة", performance: -0.5, volume: 1200000 },
+    { sector: "الاتصالات", performance: 1.5, volume: 1000000 },
+    { sector: "الرعاية الصحية", performance: 2.1, volume: 1600000 },
+    { sector: "المواد الأساسية", performance: -1.8, volume: 1400000 }
+  ];
+
   return <div className="space-y-6">
       <div className="relative aspect-video w-full bg-zinc-900 rounded-lg">
         <video className="w-full h-full object-cover rounded-lg" controls autoPlay muted loop>
@@ -314,13 +364,58 @@ export const GlobalMarkets = () => {
           <h3 className="text-lg font-bold text-white">أداء الفوركس</h3>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-4">
-            {Object.entries(forexData).map(([key, data]) => <div key={key} className="bg-zinc-800 p-4 rounded-lg">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {Object.entries(forexData).map(([key, data]) => (
+              <div key={key} className="bg-zinc-800 p-4 rounded-lg">
                 <h4 className="text-white font-medium">{data.name}</h4>
-                <p className={data.change.startsWith('+') ? 'text-green-400' : 'text-red-400'}>
-                  {data.change}
-                </p>
-              </div>)}
+                <div className="mt-2">
+                  <p className="text-white text-lg font-bold">{data.price}</p>
+                  <p className={data.change.startsWith('+') ? 'text-green-400' : 'text-red-400'}>
+                    {data.change}
+                    {data.change.startsWith('+') ? (
+                      <TrendingUp className="h-4 w-4 inline mr-1" />
+                    ) : (
+                      <TrendingDown className="h-4 w-4 inline mr-1" />
+                    )}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="backdrop-blur bg-zinc-900">
+        <CardHeader>
+          <h3 className="text-lg font-bold text-white">خريطة تحرك الأسهم</h3>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {marketMovementData.map((sector, index) => (
+              <div 
+                key={index} 
+                className={`p-4 rounded-lg ${
+                  sector.performance >= 0 ? 'bg-green-900/30' : 'bg-red-900/30'
+                }`}
+              >
+                <h4 className="text-white font-medium mb-2">{sector.sector}</h4>
+                <div className="space-y-2">
+                  <p className={`text-lg font-bold ${
+                    sector.performance >= 0 ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    {sector.performance >= 0 ? '+' : ''}{sector.performance}%
+                    {sector.performance >= 0 ? (
+                      <TrendingUp className="h-4 w-4 inline mr-1" />
+                    ) : (
+                      <TrendingDown className="h-4 w-4 inline mr-1" />
+                    )}
+                  </p>
+                  <p className="text-gray-400 text-sm">
+                    حجم التداول: {sector.volume.toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
