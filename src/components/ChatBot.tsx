@@ -13,6 +13,11 @@ interface Message {
   content: string;
 }
 
+interface Secret {
+  name: string;
+  value: string;
+}
+
 export const ChatBot = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -33,16 +38,21 @@ export const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      const { data: { GEMINI_API_KEY }, error } = await supabase
+      const { data, error } = await supabase
         .from('secrets')
-        .select('GEMINI_API_KEY')
-        .single();
+        .select('value')
+        .eq('name', 'GEMINI_API_KEY')
+        .maybeSingle();
 
-      if (error || !GEMINI_API_KEY) {
+      if (error) {
         throw new Error("حدث خطأ في الوصول إلى مفتاح API");
       }
 
-      const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+      if (!data?.value) {
+        throw new Error("لم يتم العثور على مفتاح API");
+      }
+
+      const genAI = new GoogleGenerativeAI(data.value);
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
       const prompt = `أنت محلل مالي متخصص في الأسواق المالية العربية مع تركيز خاص على توقعات وتحليلات عام 2025. عليك تقديم تحليل وتوصيات بنسبة ثقة 95% أو أعلى.
@@ -187,4 +197,3 @@ export const ChatBot = () => {
     </Card>
   );
 };
-
