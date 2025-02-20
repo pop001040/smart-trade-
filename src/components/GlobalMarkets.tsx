@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -6,49 +6,79 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { TrendingUp, TrendingDown, Search, Bell, ChevronDown } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart } from 'recharts';
 
-const sectors = ["التكنولوجيا", "البنوك", "الطاقة", "الصناعة", "الاتصالات", "العقارات", "الرعاية الصحية", "السلع الاستهلاكية"];
-const forexData = {
-  eurusd: {
-    name: "EUR/USD",
-    change: "+0.32%",
-    price: "1.0934"
+interface Company {
+  symbol: string;
+  name: string;
+  price: number;
+  change: number;
+}
+
+const markets = {
+  egypt: {
+    name: "السوق المصري",
+    symbols: [
+      { symbol: "COMI.CA", name: "البنك التجاري الدولي" },
+      { symbol: "HRHO.CA", name: "المجموعة المالية هيرميس" },
+      { symbol: "TMGH.CA", name: "مجموعة طلعت مصطفى" },
+      { symbol: "EAST.CA", name: "الشرقية للدخان" },
+      { symbol: "SWDY.CA", name: "السويدي إليكتريك" }
+    ]
   },
-  gbpusd: {
-    name: "GBP/USD",
-    change: "-0.15%",
-    price: "1.2654"
+  saudi: {
+    name: "السوق السعودي",
+    symbols: [
+      { symbol: "2222.SR", name: "أرامكو السعودية" },
+      { symbol: "1180.SR", name: "الأهلي السعودي" },
+      { symbol: "2010.SR", name: "سابك" },
+      { symbol: "7010.SR", name: "الاتصالات السعودية" },
+      { symbol: "1120.SR", name: "الراجحي" }
+    ]
   },
-  usdjpy: {
-    name: "USD/JPY",
-    change: "+0.45%",
-    price: "147.89"
-  },
-  usdchf: {
-    name: "USD/CHF",
-    change: "-0.28%",
-    price: "0.8745"
-  },
-  audusd: {
-    name: "AUD/USD",
-    change: "+0.18%",
-    price: "0.6589"
-  },
-  usdcad: {
-    name: "USD/CAD",
-    change: "-0.22%",
-    price: "1.3456"
-  },
-  nzdusd: {
-    name: "NZD/USD",
-    change: "+0.25%",
-    price: "0.6123"
-  },
-  eurjpy: {
-    name: "EUR/JPY",
-    change: "+0.38%",
-    price: "161.75"
+  kuwait: {
+    name: "السوق الكويتي",
+    symbols: [
+      { symbol: "KFH.KW", name: "بيت التمويل الكويتي" },
+      { symbol: "NBK.KW", name: "بنك الكويت الوطني" },
+      { symbol: "ZAIN.KW", name: "زين" },
+      { symbol: "AGLT.KW", name: "أجيليتي" },
+      { symbol: "BOUK.KW", name: "بنك بوبيان" }
+    ]
   }
 };
+
+const marketMovementData = [{
+  sector: "التكنولوجيا",
+  performance: 2.5,
+  volume: 1500000
+}, {
+  sector: "البنوك",
+  performance: -1.2,
+  volume: 2100000
+}, {
+  sector: "العقارات",
+  performance: 0.8,
+  volume: 900000
+}, {
+  sector: "الطاقة",
+  performance: 3.2,
+  volume: 1800000
+}, {
+  sector: "الصناعة",
+  performance: -0.5,
+  volume: 1200000
+}, {
+  sector: "الاتصالات",
+  performance: 1.5,
+  volume: 1000000
+}, {
+  sector: "الرعاية الصحية",
+  performance: 2.1,
+  volume: 1600000
+}, {
+  sector: "المواد الأساسية",
+  performance: -1.8,
+  volume: 1400000
+}];
 
 type StockDataPoint = {
   date: string;
@@ -62,77 +92,6 @@ const generateStockData = (days: number): StockDataPoint[] => {
     date: `2024/${Math.floor(i / 30) + 1}/${i % 30 + 1}`,
     value: Math.random() * 100 + 20
   }));
-};
-
-type Company = {
-  id: number;
-  symbol: string;
-  name: string;
-  sector: string;
-  price: number;
-  change: number;
-  volume: number;
-  stockData: StockDataPoint[];
-  current_price: number;
-  lowest_price: number;
-  highest_price: number;
-  rsi: number;
-  macd: number;
-  volatility: number;
-  pe_ratio: number;
-  market_cap: number;
-  dividend_yield: number;
-};
-
-const generateCompanies = (count: number, marketPrefix: string): Company[] => {
-  return Array.from({
-    length: count
-  }, (_, i) => ({
-    id: i + 1,
-    symbol: `${marketPrefix}${(i + 1).toString().padStart(4, '0')}`,
-    name: `شركة ${marketPrefix} ${i + 1}`,
-    sector: sectors[i % sectors.length],
-    price: Math.round(Math.random() * 1000 * 100) / 100,
-    change: Math.round((Math.random() * 10 - 5) * 100) / 100,
-    volume: Math.round(Math.random() * 1000000),
-    stockData: generateStockData(30),
-    current_price: Math.round(Math.random() * 100),
-    lowest_price: Math.round(Math.random() * 50),
-    highest_price: Math.round(Math.random() * 150),
-    rsi: Math.round(Math.random() * 100),
-    macd: Math.round(Math.random() * 100 - 50) / 10,
-    volatility: Math.round(Math.random() * 100) / 100,
-    pe_ratio: Math.round(Math.random() * 50 * 100) / 100,
-    market_cap: Math.round(Math.random() * 1000000000000),
-    dividend_yield: Math.round(Math.random() * 10 * 100) / 100
-  }));
-};
-
-const markets = {
-  global: {
-    name: "السوق العالمي",
-    companies: generateCompanies(100, "GLOBAL")
-  },
-  egypt: {
-    name: "السوق المصري",
-    companies: generateCompanies(150, "EGY")
-  },
-  saudi: {
-    name: "السوق السعودي",
-    companies: generateCompanies(150, "SAU")
-  },
-  kuwait: {
-    name: "السوق الكويتي",
-    companies: generateCompanies(150, "KWT")
-  },
-  oman: {
-    name: "بورصة عمان",
-    companies: generateCompanies(150, "OMN")
-  },
-  qatar: {
-    name: "السوق القطري",
-    companies: generateCompanies(150, "QAT")
-  }
 };
 
 const StockPriceChart = ({
@@ -174,12 +133,11 @@ const TechnicalGauge = ({
   value: number;
   type: 'شراء' | 'حيادية' | 'بيع';
 }) => {
-  const angle = value / 100 * 180 - 90; // Convert value to angle between -90 and 90 degrees
+  const angle = value / 100 * 180 - 90;
 
   return <div className="relative w-full aspect-[2/1]">
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="w-full h-full relative">
-          {/* Background Arc */}
           <svg className="w-full h-full" viewBox="0 0 200 100">
             <defs>
               <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -189,7 +147,6 @@ const TechnicalGauge = ({
               </linearGradient>
             </defs>
             <path d="M20 80 A 60 60 0 0 1 180 80" fill="none" stroke="url(#gradient)" strokeWidth="8" />
-            {/* Needle */}
             <g transform={`rotate(${angle}, 100, 80)`}>
               <line x1="100" y1="80" x2="100" y2="30" stroke="white" strokeWidth="2" />
             </g>
@@ -208,7 +165,6 @@ const CurrencyMatrix = () => {
     'EUR/USD': 1.05171,
     'EUR/JPY': 157.123,
     'GBP/USD': 1.2154
-    // ... add more rates
   };
   return <div className="overflow-x-auto">
       <table className="w-full text-sm text-left text-gray-300">
@@ -233,54 +189,49 @@ const CurrencyMatrix = () => {
 };
 
 export const GlobalMarkets = () => {
-  const [selectedMarket, setSelectedMarket] = useState("global");
+  const [selectedMarket, setSelectedMarket] = useState<string>("egypt");
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [showDetails, setShowDetails] = useState(false);
 
-  const filteredCompanies = markets[selectedMarket as keyof typeof markets].companies.filter(company =>
-    company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    company.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      try {
+        const apiKey = 'f2d390029a6b4178819b60dc1064a23c';
+        const market = markets[selectedMarket as keyof typeof markets];
+        
+        const promises = market.symbols.map(async (stock) => {
+          const response = await fetch(
+            `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stock.symbol}&apikey=${apiKey}`
+          );
+          const data = await response.json();
+          
+          if (data['Global Quote']) {
+            return {
+              symbol: stock.symbol,
+              name: stock.name,
+              price: parseFloat(data['Global Quote']['05. price']),
+              change: parseFloat(data['Global Quote']['09. change'])
+            };
+          }
+          return null;
+        });
+
+        const results = (await Promise.all(promises)).filter(Boolean) as Company[];
+        setCompanies(results);
+      } catch (error) {
+        console.error('Error fetching market data:', error);
+      }
+    };
+
+    fetchMarketData();
+  }, [selectedMarket]);
+
+  const filteredCompanies = companies.filter(company =>
+    company.name.includes(searchQuery) ||
+    company.symbol.includes(searchQuery)
   );
-
-  const handleCompanyClick = (company: Company) => {
-    setSelectedCompany(company);
-    setShowDetails(true);
-  };
-
-  const marketMovementData = [{
-    sector: "التكنولوجيا",
-    performance: 2.5,
-    volume: 1500000
-  }, {
-    sector: "البنوك",
-    performance: -1.2,
-    volume: 2100000
-  }, {
-    sector: "العقارات",
-    performance: 0.8,
-    volume: 900000
-  }, {
-    sector: "الطاقة",
-    performance: 3.2,
-    volume: 1800000
-  }, {
-    sector: "الصناعة",
-    performance: -0.5,
-    volume: 1200000
-  }, {
-    sector: "الاتصالات",
-    performance: 1.5,
-    volume: 1000000
-  }, {
-    sector: "الرعاية الصحية",
-    performance: 2.1,
-    volume: 1600000
-  }, {
-    sector: "المواد الأساسية",
-    performance: -1.8,
-    volume: 1400000
-  }];
 
   return <div className="space-y-6">
       <Card className="backdrop-blur bg-zinc-950">
@@ -288,11 +239,7 @@ export const GlobalMarkets = () => {
           <div className="flex flex-col md:flex-row gap-4">
             <Select
               value={selectedMarket}
-              onValueChange={(value) => {
-                setSelectedMarket(value);
-                setSelectedCompany(null);
-                setShowDetails(false);
-              }}
+              onValueChange={setSelectedMarket}
             >
               <SelectTrigger className="w-[200px] bg-zinc-800 text-white border-zinc-700">
                 <SelectValue placeholder="اختر السوق" />
@@ -323,9 +270,9 @@ export const GlobalMarkets = () => {
         </CardHeader>
         <CardContent>
           <Select
-            value={selectedCompany?.id.toString() || ''}
+            value={selectedCompany?.symbol || ''}
             onValueChange={(value) => {
-              const company = filteredCompanies.find(c => c.id.toString() === value);
+              const company = companies.find(c => c.symbol === value);
               if (company) {
                 setSelectedCompany(company);
                 setShowDetails(true);
@@ -338,14 +285,14 @@ export const GlobalMarkets = () => {
             <SelectContent className="bg-zinc-800 text-white border-zinc-700 max-h-[300px]">
               {filteredCompanies.map(company => (
                 <SelectItem
-                  key={company.id}
-                  value={company.id.toString()}
+                  key={company.symbol}
+                  value={company.symbol}
                   className="hover:bg-zinc-700"
                 >
                   <div className="flex items-center justify-between w-full">
                     <span>{company.name}</span>
                     <span className={company.change >= 0 ? 'text-green-400' : 'text-red-400'}>
-                      ${company.price} ({company.change >= 0 ? '+' : ''}{company.change}%)
+                      ${company.price.toFixed(2)} ({company.change >= 0 ? '+' : ''}{company.change}%)
                     </span>
                   </div>
                 </SelectItem>
@@ -355,7 +302,8 @@ export const GlobalMarkets = () => {
         </CardContent>
       </Card>
 
-      {showDetails && selectedCompany && <Card className="backdrop-blur bg-[#2D3047] text-white">
+      {showDetails && selectedCompany && (
+        <Card className="backdrop-blur bg-[#2D3047] text-white">
           <CardHeader className="border-b border-gray-700">
             <div className="flex justify-between items-center">
               <div>
@@ -367,133 +315,43 @@ export const GlobalMarkets = () => {
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="pt-4 bg-zinc-950 hover:bg-zinc-800">
+          <CardContent className="pt-4">
             <div className="grid grid-cols-1 gap-6">
-              <StockPriceChart data={selectedCompany.stockData} />
+              <StockPriceChart data={generateStockData(30)} />
               
               <Card className="bg-zinc-900/50">
-                <CardHeader className="bg-gray-950 hover:bg-gray-800">
-                  <h3 className="text-lg font-semibold text-slate-50">تحليلات فنية</h3>
-                  <p className="text-sm text-slate-50">تلخيص ما تقترحه المؤشرات</p>
+                <CardHeader>
+                  <h3 className="text-lg font-semibold">تحليلات فنية</h3>
+                  <p className="text-sm">تلخيص ما تقترحه المؤشرات</p>
                 </CardHeader>
-                <CardContent className="rounded-sm bg-neutral-950 hover:bg-neutral-800">
+                <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                      <h4 className="text-center mb-2 text-gray-50">المتوسطات المتحركة</h4>
+                      <h4 className="text-center mb-2">المتوسطات المتحركة</h4>
                       <TechnicalGauge value={75} type="شراء" />
                     </div>
                     <div>
-                      <h4 className="text-center mb-2 text-slate-50">الملخص</h4>
+                      <h4 className="text-center mb-2">الملخص</h4>
                       <TechnicalGauge value={50} type="حيادية" />
                     </div>
                     <div>
-                      <h4 className="text-center mb-2 text-zinc-50">المؤشرات الفنية</h4>
+                      <h4 className="text-center mb-2">المؤشرات الفنية</h4>
                       <TechnicalGauge value={25} type="بيع" />
                     </div>
                   </div>
                 </CardContent>
               </Card>
-
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <h3 className="text-lg mb-4">التحليل الفني</h3>
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">MACD</span>
-                      <span>{selectedCompany.macd}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">RSI</span>
-                      <span>{selectedCompany.rsi}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">مضاعف الربحية</span>
-                      <span>{selectedCompany.pe_ratio}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">التقلب</span>
-                      <span>{selectedCompany.volatility}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-lg mb-4">تفاصيل السهم</h3>
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">السعر الحالي</span>
-                      <span className="font-bold">${selectedCompany.current_price}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">التغير</span>
-                      <span className={selectedCompany.change >= 0 ? 'text-green-400' : 'text-red-400'}>
-                        {selectedCompany.change >= 0 ? '+' : ''}{selectedCompany.change}%
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">أعلى سعر</span>
-                      <span>${selectedCompany.highest_price}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">أدنى سعر</span>
-                      <span>${selectedCompany.lowest_price}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-gray-50">
-                  <h3 className="text-lg mb-4">معلومات إضافية</h3>
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">القيمة السوقية</span>
-                      <span>${(selectedCompany.market_cap / 1e9).toFixed(2)}B</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">عائد التوزيعات</span>
-                      <span>{selectedCompany.dividend_yield}%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">حجم التداول</span>
-                      <span>{selectedCompany.volume.toLocaleString()}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <h3 className="text-lg mb-4">محاكي التداول</h3>
-                  <div className="flex gap-4">
-                    <div className="flex-1">
-                      <Input type="number" className="bg-[#1F2937] border-gray-700 text-white" placeholder="السعر" />
-                    </div>
-                    <div className="flex-1">
-                      <Input type="number" className="bg-[#1F2937] border-gray-700 text-white" placeholder="الكمية" />
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-lg mb-4">تنبيهات الأسعار</h3>
-                  <div className="flex gap-4">
-                    <Input type="number" className="bg-[#1F2937] border-gray-700 text-white" placeholder="السعر المستهدف" />
-                    <Button variant="outline" className="bg-gray-950 hover:bg-gray-800">
-                      تعيين تنبيه
-                    </Button>
-                  </div>
-                </div>
-              </div>
             </div>
           </CardContent>
-        </Card>}
+        </Card>
+      )}
 
       <Card className="backdrop-blur bg-zinc-900">
         <CardHeader>
           <div className="flex justify-between items-center">
             <h3 className="text-xl font-bold text-white">أسعار الفوركس المتقاطعة</h3>
-            
           </div>
-          <p className="text-sm text-zinc-50">يتيح لك هذا الجدول عرض أسعار العملات المحددة لحظياً مقارنة بالعملات الرئيسية الأخرى.</p>
+          <p className="text-sm text-white">يتيح لك هذا الجدول عرض أسعار العملات المحددة لحظياً مقارنة بالعملات الرئيسية الأخرى.</p>
         </CardHeader>
         <CardContent>
           <CurrencyMatrix />
@@ -506,7 +364,8 @@ export const GlobalMarkets = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {marketMovementData.map((sector, index) => <div key={index} className={`p-4 rounded-lg ${sector.performance >= 0 ? 'bg-green-900/30' : 'bg-red-900/30'}`}>
+            {marketMovementData.map((sector, index) => (
+              <div key={index} className={`p-4 rounded-lg ${sector.performance >= 0 ? 'bg-green-900/30' : 'bg-red-900/30'}`}>
                 <h4 className="text-white font-medium mb-2">{sector.sector}</h4>
                 <div className="space-y-2">
                   <p className={`text-lg font-bold ${sector.performance >= 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -517,7 +376,8 @@ export const GlobalMarkets = () => {
                     حجم التداول: {sector.volume.toLocaleString()}
                   </p>
                 </div>
-              </div>)}
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
