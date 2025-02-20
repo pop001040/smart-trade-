@@ -32,8 +32,8 @@ export const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      // تهيئة Google AI
-      const genAI = new GoogleGenerativeAI('AIzaSyCey6mppBs3G4OkMAYd6GvGe52m5kF3qR8');
+      // تهيئة Google AI مع مفتاح API جديد
+      const genAI = new GoogleGenerativeAI('AIzaSyCo4nRtCbQuyXVAqQt5G6zYyGXy8wmELkc');
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
       // صياغة النص المطلوب
@@ -66,10 +66,14 @@ export const ChatBot = () => {
     } catch (error: any) {
       console.error('Chat error:', error);
       
-      // رسالة خطأ أكثر تحديداً
-      const errorMessage = error.message?.includes('API') 
-        ? "حدث خطأ في الاتصال بالخدمة. يرجى المحاولة مرة أخرى بعد قليل."
-        : "عذراً، لم نتمكن من معالجة طلبك. يرجى المحاولة مرة أخرى.";
+      // رسالة خطأ أكثر تفصيلاً
+      let errorMessage = "عذراً، لم نتمكن من معالجة طلبك. يرجى المحاولة مرة أخرى.";
+      
+      if (error.message?.includes('API')) {
+        errorMessage = "حدث خطأ في الاتصال بالخدمة. يرجى التأكد من تفعيل خدمة Google AI في لوحة التحكم.";
+      } else if (error.status === 403) {
+        errorMessage = "خطأ في التحقق من صحة المفتاح. يرجى التأكد من تفعيل الخدمة.";
+      }
 
       toast({
         title: "حدث خطأ",
