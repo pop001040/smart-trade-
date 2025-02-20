@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { TrendingUp, TrendingDown, Search, Bell, ChevronDown } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart } from 'recharts';
+
 const sectors = ["التكنولوجيا", "البنوك", "الطاقة", "الصناعة", "الاتصالات", "العقارات", "الرعاية الصحية", "السلع الاستهلاكية"];
 const forexData = {
   eurusd: {
@@ -20,10 +21,12 @@ const forexData = {
     change: "+0.45%"
   }
 };
+
 type StockDataPoint = {
   date: string;
   value: number;
 };
+
 const generateStockData = (days: number): StockDataPoint[] => {
   return Array.from({
     length: days
@@ -32,6 +35,7 @@ const generateStockData = (days: number): StockDataPoint[] => {
     value: Math.random() * 100 + 20
   }));
 };
+
 type Company = {
   id: number;
   symbol: string;
@@ -51,6 +55,7 @@ type Company = {
   market_cap: number;
   dividend_yield: number;
 };
+
 const generateCompanies = (count: number, marketPrefix: string): Company[] => {
   return Array.from({
     length: count
@@ -74,7 +79,12 @@ const generateCompanies = (count: number, marketPrefix: string): Company[] => {
     dividend_yield: Math.round(Math.random() * 10 * 100) / 100
   }));
 };
+
 const markets = {
+  global: {
+    name: "السوق العالمي",
+    companies: generateCompanies(100, "GLOBAL")
+  },
   egypt: {
     name: "السوق المصري",
     companies: generateCompanies(150, "EGY")
@@ -96,6 +106,7 @@ const markets = {
     companies: generateCompanies(150, "QAT")
   }
 };
+
 const StockPriceChart = ({
   data
 }: {
@@ -127,26 +138,41 @@ const StockPriceChart = ({
       </ResponsiveContainer>
     </div>;
 };
+
 export const GlobalMarkets = () => {
-  const [selectedMarket, setSelectedMarket] = useState("egypt");
+  const [selectedMarket, setSelectedMarket] = useState("global");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCompany, setSelectedCompany] = useState<Company | null>(markets.egypt.companies[0]);
-  const filteredCompanies = markets[selectedMarket as keyof typeof markets].companies.filter(company => company.name.toLowerCase().includes(searchQuery.toLowerCase()) || company.symbol.toLowerCase().includes(searchQuery.toLowerCase()));
-  return <div className="space-y-6">
-      {selectedCompany && <Card className="backdrop-blur bg-[#2D3047] text-white">
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(markets.global.companies[0]);
+
+  const filteredCompanies = markets[selectedMarket as keyof typeof markets].companies.filter(company => 
+    company.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    company.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-6">
+      {selectedCompany && (
+        <Card className="backdrop-blur bg-[#2D3047] text-white">
           <CardHeader className="border-b border-gray-700">
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-xl font-bold">{selectedCompany.name}</h2>
                 <p className="text-sm text-gray-400">{selectedCompany.symbol}</p>
               </div>
-              <Button variant="outline" size="icon" onClick={() => {}}>
-                <Bell className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <span className={`text-sm ${selectedCompany.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  {selectedCompany.change >= 0 ? '+' : ''}{selectedCompany.change}%
+                </span>
+                <Button variant="outline" size="icon">
+                  <Bell className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </CardHeader>
           <CardContent className="pt-4">
             <div className="grid grid-cols-1 gap-6">
+              <StockPriceChart data={selectedCompany.stockData} />
+              
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <h3 className="text-lg mb-4">التحليل الفني</h3>
@@ -213,70 +239,100 @@ export const GlobalMarkets = () => {
                 </div>
               </div>
 
-              <div>
-                <h3 className="text-lg mb-4">محاكي التداول</h3>
-                <div className="flex gap-4">
-                  <div className="flex-1">
-                    <Input type="number" className="bg-[#1F2937] border-gray-700 text-white" placeholder="السعر" />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h3 className="text-lg mb-4">محاكي التداول</h3>
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <Input type="number" className="bg-[#1F2937] border-gray-700 text-white" placeholder="السعر" />
+                    </div>
+                    <div className="flex-1">
+                      <Input type="number" className="bg-[#1F2937] border-gray-700 text-white" placeholder="الكمية" />
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <Input type="number" className="bg-[#1F2937] border-gray-700 text-white" placeholder="الكمية" />
-                  </div>
-                  <Button className="bg-yellow-500 hover:bg-yellow-600 text-zinc-950 rounded">
-                    محاكاة تداول
-                  </Button>
                 </div>
-              </div>
 
-              <div>
-                <h3 className="text-lg mb-4">تنبيهات الأسعار</h3>
-                <div className="flex gap-4">
-                  <Input type="number" className="bg-[#1F2937] border-gray-700 text-white" placeholder="السعر المستهدف" />
-                  <Button variant="outline" className="bg-gray-950 hover:bg-gray-800">
-                    تعيين تنبيه
-                  </Button>
+                <div>
+                  <h3 className="text-lg mb-4">تنبيهات الأسعار</h3>
+                  <div className="flex gap-4">
+                    <Input type="number" className="bg-[#1F2937] border-gray-700 text-white" placeholder="السعر المستهدف" />
+                    <Button variant="outline" className="bg-gray-950 hover:bg-gray-800">
+                      تعيين تنبيه
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
           </CardContent>
-        </Card>}
+        </Card>
+      )}
 
       <Card className="backdrop-blur bg-zinc-950">
         <CardHeader>
           <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex flex-wrap gap-2">
-              {Object.entries(markets).map(([key, market]) => <Button key={key} variant={selectedMarket === key ? "default" : "outline"} onClick={() => {
-              setSelectedMarket(key);
-              setSelectedCompany(market.companies[0]);
-            }}>
-                  {market.name}
-                </Button>)}
-            </div>
+            <Select 
+              value={selectedMarket}
+              onValueChange={setSelectedMarket}
+            >
+              <SelectTrigger className="w-[200px] bg-zinc-800 text-white border-zinc-700">
+                <SelectValue placeholder="اختر السوق" />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-800 text-white border-zinc-700">
+                {Object.entries(markets).map(([key, market]) => (
+                  <SelectItem 
+                    key={key} 
+                    value={key}
+                    className="hover:bg-zinc-700"
+                  >
+                    {market.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
             <div className="flex-1 relative">
               <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
-              <Input className="pl-8" placeholder="ابحث عن شركة..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+              <Input
+                className="pl-8"
+                placeholder="ابحث عن شركة..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {filteredCompanies.map(company => <div key={company.id} className="p-4 bg-white/5 rounded cursor-pointer hover:bg-white/10 transition-colors" onClick={() => setSelectedCompany(company)}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium text-white">{company.symbol}</h4>
-                    <p className="text-sm text-gray-400">{company.name}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-white">${company.price}</p>
-                    <p className={`text-sm ${company.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      {company.change >= 0 ? '+' : ''}{company.change}%
-                      {company.change >= 0 ? <TrendingUp className="h-4 w-4 inline ml-1" /> : <TrendingDown className="h-4 w-4 inline ml-1" />}
-                    </p>
-                  </div>
-                </div>
-              </div>)}
+          <div className="space-y-2">
+            <Select 
+              value={selectedCompany?.id.toString()} 
+              onValueChange={(value) => {
+                const company = filteredCompanies.find(c => c.id.toString() === value);
+                if (company) setSelectedCompany(company);
+              }}
+            >
+              <SelectTrigger className="w-full bg-zinc-800 text-white border-zinc-700">
+                <SelectValue placeholder="اختر شركة" />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-800 text-white border-zinc-700 max-h-[300px]">
+                {filteredCompanies.map((company) => (
+                  <SelectItem 
+                    key={company.id} 
+                    value={company.id.toString()}
+                    className="hover:bg-zinc-700"
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <span>{company.name}</span>
+                      <span className={company.change >= 0 ? 'text-green-400' : 'text-red-400'}>
+                        {company.change >= 0 ? '+' : ''}{company.change}%
+                      </span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>
-    </div>;
+    </div>
+  );
 };
