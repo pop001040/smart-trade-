@@ -12,14 +12,6 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-primary via-primary/95 to-primary/90 rounded">
       {/* Hero Section with Video */}
       <div className="relative w-full bg-black text-center py-0 overflow-hidden">
-        <div className="absolute inset-0 z-10 bg-black/50 flex flex-col items-center justify-center">
-          <h1 className="font-bold mb-2 animate-fadeIn text-5xl text-zinc-50 my-0 mx-0">
-            <span className="text-gray-50">خبير التداول</span> الذكي
-          </h1>
-          <p className="max-w-2xl mx-auto text-gray-300">
-            منصة التداول الأولى للأسواق العالمية والعربية
-          </p>
-        </div>
         <video 
           className="w-full object-cover min-h-[600px]"
           autoPlay
@@ -32,9 +24,19 @@ const Index = () => {
         </video>
       </div>
 
+      {/* Title Section */}
+      <div className="bg-gradient-to-r from-primary to-primary/90 py-12 text-center">
+        <h1 className="text-6xl font-bold mb-4 text-zinc-50">
+          <span className="text-gray-50">خبير التداول</span> الذكي
+        </h1>
+        <p className="text-2xl text-gray-300 max-w-3xl mx-auto">
+          منصة التداول الأولى للأسواق العالمية والعربية
+        </p>
+      </div>
+
       <div className="container mx-auto px-4 py-8">
-        <TopStocks />
         <StockTicker />
+        <TopStocks />
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8 my-0">
           <div className="lg:col-span-2">
