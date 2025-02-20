@@ -32,23 +32,29 @@ export const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      // تهيئة Google AI مع مفتاح API الجديد
       const genAI = new GoogleGenerativeAI('AIzaSyA6JU8Fmw_S0ozBgLNC7gcZd2Ll0IMIaOA');
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-      // صياغة النص المطلوب
-      const prompt = `أنت مساعد مالي خبير متخصص في الأسواق المالية العربية والعالمية.
-        يجب أن تقدم تحليلاً دقيقاً جداً (بنسبة ثقة 90%) للأسهم والتوصيات المالية.
-        قدم إجابات دقيقة وقصيرة باللغة العربية فقط.
-        يجب أن تشمل الإجابة:
-        - تحليل فني مفصل
-        - مؤشرات السوق الرئيسية
-        - توصيات محددة مع نسب المخاطرة
-        - نقاط الدخول والخروج المقترحة
+      const prompt = `أنت محلل مالي متخصص في الأسواق المالية العربية. عليك تقديم تحليل وتوصيات بنسبة ثقة 95% أو أعلى.
 
-        السؤال من المستخدم هو: ${input}`;
+      قواعد مهمة يجب اتباعها:
+      1. قدم إجابات مباشرة ومختصرة وواضحة
+      2. كل توصية يجب أن تكون مدعومة بتحليل فني
+      3. حدد نسبة المخاطرة بدقة لكل توصية
+      4. اذكر نقاط الدخول والخروج بشكل محدد
+      5. اعتمد فقط على المؤشرات الفنية الموثوقة
+      6. قدم التحليل باللغة العربية فقط
 
-      // محاولة الحصول على رد
+      يجب أن تحتوي إجابتك على:
+      - التحليل الفني المفصل مع المؤشرات
+      - نقاط الدخول المثالية (السعر المحدد)
+      - نقاط الخروج للربح والخسارة
+      - نسبة المخاطرة والعائد المتوقع
+      - توصية نهائية واضحة (شراء/بيع/انتظار)
+      - مستويات الدعم والمقاومة الرئيسية
+
+      السؤال من العميل هو: ${input}`;
+
       const result = await model.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
@@ -66,11 +72,10 @@ export const ChatBot = () => {
     } catch (error: any) {
       console.error('Chat error:', error);
       
-      // رسالة خطأ أكثر تفصيلاً
       let errorMessage = "عذراً، لم نتمكن من معالجة طلبك. يرجى المحاولة مرة أخرى.";
       
       if (error.message?.includes('API')) {
-        errorMessage = "حدث خطأ في الاتصال بالخدمة. يرجى التأكد من تفعيل خدمة Google AI في لوحة التحكم.";
+        errorMessage = "حدث خطأ في الاتصال بالخدمة. يرجى المحاولة مرة أخرى بعد قليل.";
       } else if (error.status === 403) {
         errorMessage = "خطأ في التحقق من صحة المفتاح. يرجى التأكد من تفعيل الخدمة.";
       }
@@ -89,14 +94,14 @@ export const ChatBot = () => {
     return (
       <div className="mt-2 bg-gray-800 rounded-lg p-4">
         <div className="flex justify-between items-center">
-          <span className="text-white">المؤشر الفني</span>
-          <span className={`${value >= 50 ? 'text-green-400' : 'text-red-400'}`}>
+          <span className="text-white">مستوى الثقة في التحليل</span>
+          <span className={`${value >= 90 ? 'text-green-400' : 'text-yellow-400'}`}>
             {value}%
           </span>
         </div>
         <div className="mt-2 h-2 bg-gray-700 rounded">
           <div 
-            className={`h-full rounded ${value >= 50 ? 'bg-green-400' : 'bg-red-400'}`}
+            className={`h-full rounded ${value >= 90 ? 'bg-green-400' : 'bg-yellow-400'}`}
             style={{ width: `${value}%` }}
           />
         </div>
@@ -120,7 +125,7 @@ export const ChatBot = () => {
                 }`}>
                   {message.content}
                   {message.role === 'assistant' && message.content.includes('تحليل') && (
-                    renderTechnicalIndicator(90)
+                    renderTechnicalIndicator(95)
                   )}
                 </div>
               </div>
@@ -137,7 +142,7 @@ export const ChatBot = () => {
             <Input
               value={input}
               onChange={e => setInput(e.target.value)}
-              placeholder="اكتب سؤالك هنا..."
+              placeholder="اكتب سؤالك عن السهم هنا..."
               className="bg-white/5 border-white/10 text-white placeholder:text-gray-400"
             />
             <Button
